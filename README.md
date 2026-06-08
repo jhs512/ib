@@ -29,6 +29,7 @@ AI-first Obsidian 지식그래프 볼트 운영 스킬. 자세한 내용은 [`sk
 
 | 스킬 | 용도 |
 |---|---|
+| `setup-ib` | 폴더/repo에 볼트 운영 컨텍스트 셋업 (ib 첫 사용 전 1회) |
 | `init-vault` | 새 볼트 스캐폴딩 |
 | `convert-note` | raw 자료 → 타입이 있는 원자 노드 |
 | `query-vault` | 그래프 탐색 기반 질의응답 |
