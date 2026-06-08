@@ -1,0 +1,16 @@
+{
+  "name": "infinite-brain",
+  "version": "0.1.0",
+  "description": "Infinite Brain (ib) — AI-first Obsidian knowledge-graph vault skills for Claude Code.",
+  "author": {
+    "name": "jhs512"
+  },
+  "homepage": "https://github.com/jhs512/skills",
+  "skills": [
+    "./skills/ib/convert-note",
+    "./skills/ib/init-vault",
+    "./skills/ib/organize-vault",
+    "./skills/ib/query-vault",
+    "./skills/ib/vault-health"
+  ]
+}

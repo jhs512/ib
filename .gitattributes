@@ -1,0 +1,2 @@
+# Normalize line endings to LF on commit so SKILL.md is consistent across platforms
+* text=auto eol=lf
