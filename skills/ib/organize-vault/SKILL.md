@@ -24,25 +24,25 @@ You are auditing the Infinite Brain knowledge graph for health issues.
 Find nodes with zero edges and zero `related` links. For each: suggest 2-3 connection targets with edge types. If truly standalone, flag with `#standalone`.
 
 **2. Contradiction Scan**
-Compare nodes in the same namespace for conflicting claims. Report as: `[node-a] contradicts [node-b] about [topic]`.
+Compare nodes in the same namespace for conflicting claims; pay special attention to contradictory edges between `hypothesis`/`fact`/`decision` nodes. Report as: `[node-a] contradicts [node-b] about [topic]`.
 
 **3. Confidence Gaps**
-Find nodes where `confidence` is missing, 0.0, or inconsistent with content. Flag nodes with high confidence but a triggered staleness signal.
+Find nodes where `confidence` is missing, 0.0, or inconsistent with content. Suggest updated values based on available evidence. Flag nodes with high confidence but a triggered staleness signal.
 
 **4. Stale Node Detection**
 Check `staleness_signal` conditions. Flag nodes where `verified_at` is over 90 days old. Priority: pillars > decisions > facts > patterns > hypotheses.
 
 **5. Cross-Link Opportunities**
-Find nodes sharing 2+ tags with no edge. Suggest specific edge types and weights.
+Find nodes sharing 2+ tags with no edge. Suggest specific edge types and weights with rationale. Look for implicit hierarchies (patterns implementing pillars, decisions deriving from hypotheses, etc.).
 
 **6. Taxonomy Health**
-Compile tag list. Flag inconsistent spellings (e.g. "AI" vs "ai"). Suggest merges for near-identical tags.
+Compile the master tag list (create one if missing). Flag inconsistent spellings (e.g. "AI" vs "ai" vs "artificial-intelligence"). Suggest merges for near-identical tags.
 
 **7. Visibility Health**
-Find nodes missing `visibility`. Flag conflicts between content sensitivity and current visibility setting.
+Find nodes missing `visibility`. Flag conflicts between content sensitivity or namespace scope and the current setting. Always suggest one of: `public`, `namespace`, `private`, `system`.
 
 **8. Summary Quality**
-Flag summaries over 200 chars, placeholder text ("TBD", "1-2 sentences..."), or summaries that don't match node content.
+Flag summaries over 200 chars or 3+ sentences, empty or placeholder text ("TBD", "description", "1-2 sentences..."), or summaries that don't match node content.
 
 ## Output Format
 
