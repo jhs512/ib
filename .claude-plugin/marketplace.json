@@ -1,0 +1,16 @@
+{
+  "name": "jhs512-skills",
+  "owner": {
+    "name": "jhs512",
+    "email": "jangka512@gmail.com",
+    "url": "https://github.com/jhs512"
+  },
+  "plugins": [
+    {
+      "name": "infinite-brain",
+      "source": "./",
+      "description": "Infinite Brain (ib) — give your AI agent permanent, typed memory. Six skills that turn any folder into an Obsidian-compatible knowledge graph: typed nodes, typed edges, confidence decay, scoped retrieval.",
+      "version": "0.2.0"
+    }
+  ]
+}

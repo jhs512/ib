@@ -1,56 +1,132 @@
-# jhs512/skills
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-0.2.0-brightgreen.svg" alt="Version">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a>
+  <img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg" alt="Claude Code Plugin">
+  <img src="https://img.shields.io/badge/Skills-6-orange.svg" alt="6 Skills">
+  <img src="https://img.shields.io/badge/Vault-Obsidian_Compatible-7c3aed.svg" alt="Obsidian Compatible">
+  <a href="https://github.com/jhs512/skills/stargazers"><img src="https://img.shields.io/github/stars/jhs512/skills?style=social" alt="GitHub Stars"></a>
+</p>
 
-Claude Code · OpenCode · Codex · Cursor 등에서 쓰는 에이전트 스킬 저장소입니다.
-[open agent skills 생태계](https://github.com/vercel-labs/skills)의 `skills` CLI로 설치합니다.
+# Infinite Brain — permanent, typed memory for your AI agent
 
-## 설치
+**English** | [한국어](README_KO.md)
+
+> AI agents forget everything between sessions. **Infinite Brain** turns any folder into a typed knowledge graph your agent can build, maintain, and query — every note a typed **node**, every connection a typed **edge**, with confidence scores that decay until re-verified. Obsidian-compatible, plain markdown, no database.
+
+## Why a graph, not a pile of notes?
+
+Long, loosely-linked documents are fine for humans but broken for agents: they read too much, links don't say *why* two notes connect, and metadata is too weak for reliable retrieval. Infinite Brain fixes this with:
+
+- **16+1 node types** (`pillar`, `decision`, `fact`, `hypothesis`, `playbook`, …) — one idea per node, 50–300 words
+- **10 edge types** (`supports`, `contradicts`, `derived_from`, `depends_on`, …) — every edge has a direction, weight, and a reason
+- **Trust metadata** — `confidence` (0.0–1.0), `verified_at`, `staleness_signal`, `visibility` (`public`/`namespace`/`private`/`system`)
+- **Scoped retrieval** — answer questions by traversing edges (~600 tokens), not by reading the whole vault (~9,000 tokens)
+- **Audit trail** — every skill run writes a lightweight log node; weekly health checks decay stale confidence automatically
+
+## The Skills
+
+| Command | What it does |
+|---|---|
+| `/setup-ib` | Wire the vault operating context into any repo/folder (run once, first) |
+| `/init-vault` | Scaffold a complete vault — 17 folders, system schema, templates, example nodes |
+| `/convert-note` | Decompose raw material (`raw/`) into atomic typed nodes |
+| `/query-vault` | Answer questions via graph traversal — token-cheap scoped retrieval |
+| `/organize-vault` | Interactive audit: orphans, contradictions, confidence gaps, taxonomy drift |
+| `/vault-health` | Automated maintenance: confidence decay + full audit + health report (`auto` mode for cron) |
+
+## Install
+
+### As a Claude Code plugin (marketplace)
+
+```shell
+/plugin marketplace add jhs512/skills
+/plugin install infinite-brain@jhs512-skills
+```
+
+### With the skills CLI (Claude Code · Codex · Cursor · OpenCode)
 
 ```bash
-# 저장소의 모든 스킬 설치
+# everything
 npx skills@latest add jhs512/skills --all
 
-# 그룹(카테고리) 단위로 보기
-npx skills@latest add jhs512/skills --list
-
-# 특정 스킬만 설치
+# or pick skills
 npx skills@latest add jhs512/skills --skill init-vault --skill query-vault
 
-# 특정 에이전트에만 설치 (예: Claude Code)
+# or target one agent
 npx skills@latest add jhs512/skills -a claude-code
 ```
 
-## 그룹
+## Quickstart
 
-스킬은 `skills/<group>/<name>/SKILL.md` 카탈로그 레이아웃으로 그룹화되어 있습니다.
-
-### `ib` — Infinite Brain
-
-AI-first Obsidian 지식그래프 볼트 운영 스킬. 자세한 내용은 [`skills/ib/README.md`](./skills/ib/README.md).
-
-| 스킬 | 용도 |
-|---|---|
-| `setup-ib` | 폴더/repo에 볼트 운영 컨텍스트 셋업 (ib 첫 사용 전 1회) |
-| `init-vault` | 새 볼트 스캐폴딩 |
-| `convert-note` | raw 자료 → 타입이 있는 원자 노드 |
-| `query-vault` | 그래프 탐색 기반 질의응답 |
-| `organize-vault` | 대화형 볼트 감사 |
-| `vault-health` | 신뢰도 감쇠 + 감사 + 헬스 리포트 |
-
-## 새 스킬 추가
-
-1. `skills/<group>/<name>/SKILL.md` 경로로 폴더를 만듭니다.
-2. `SKILL.md` 상단에 `name`, `description` frontmatter를 넣습니다 (필수).
-3. 새 그룹을 만들면 `.claude-plugin/plugin.json`의 `skills` 배열과 이 README에 등록합니다.
-
-```md
----
-name: my-skill
-description: 이 스킬이 하는 일 한 줄 설명.
----
-
-# 본문 ...
+```
+1.  /setup-ib          # once — tells the agent "this folder is a vault"
+2.  /init-vault        # scaffold folders, schema, templates, 2 example nodes
+3.  Drop anything into raw/   (articles, meeting notes, transcripts — a
+                               descriptive filename is enough)
+4.  /convert-note      # raw file → atomic typed nodes, wired with edges
+5.  /query-vault       # ask questions; the agent traverses the graph
+6.  /schedule weekly /vault-health auto    # optional: self-maintaining memory
 ```
 
----
+Open the same folder in Obsidian at any point — Graph View renders your agent's memory as a live node map.
 
-원본 볼트 스킬 출처: [JotaSXBR/obsidian-infinite-brain](https://github.com/JotaSXBR/obsidian-infinite-brain)
+## Copy-paste prompts
+
+After installing, try these in Claude Code:
+
+**Personal knowledge base**
+```
+/setup-ib — I want a personal vault. Namespace "personal", then init the vault
+and convert everything currently in raw/.
+```
+
+**Team decision log**
+```
+/query-vault — why did we choose PostgreSQL over MongoDB? Trace the decision
+back to its supporting evidence and tell me if anything contradicts it.
+```
+
+**Research ingestion**
+```
+I just dropped 5 papers into raw/. Run /convert-note on all of them, then
+/organize-vault to find contradictions between the new nodes and what I
+already believe.
+```
+
+**Memory hygiene**
+```
+/vault-health — decay anything I haven't verified in 90 days and give me the
+top 5 things I should re-confirm or delete.
+```
+
+## How it relates to neighbors
+
+| Repo | What it is | Relationship |
+|---|---|---|
+| [JotaSXBR/obsidian-infinite-brain](https://github.com/JotaSXBR/obsidian-infinite-brain) | The original Infinite Brain vault template + methodology | **Upstream origin.** This repo packages the methodology as an installable plugin: self-contained `init-vault` (vendored system templates), a `setup-ib` onboarding skill, and multi-agent distribution via the skills CLI. |
+| [Obsidian](https://obsidian.md/) + Dataview / Web Clipper | Human-facing vault browser and capture tools | **Complementary.** Agents write the graph; Obsidian renders it. No lock-in — it's all plain markdown. |
+| Claude Code session memory / CLAUDE.md | Per-project agent instructions | **Different layer.** CLAUDE.md tells the agent *how to behave*; Infinite Brain stores *what it knows* — versionable, auditable, queryable. |
+
+## Repo layout
+
+```
+skills/
+└── ib/                  # Infinite Brain skill group
+    ├── setup-ib/        #   onboarding + agent-rules seed
+    ├── init-vault/      #   scaffolder + vendored system templates
+    ├── convert-note/    #   raw → atomic nodes
+    ├── query-vault/     #   scoped graph retrieval
+    ├── organize-vault/  #   interactive audit
+    └── vault-health/    #   decay + audit + report (cron-ready)
+.claude-plugin/
+    ├── plugin.json      # Claude Code plugin manifest
+    └── marketplace.json # marketplace listing
+```
+
+Adding a new skill: create `skills/<group>/<name>/SKILL.md` with `name` + `description` frontmatter, register the group in `.claude-plugin/plugin.json`.
+
+## Credits & License
+
+Built on the Infinite Brain methodology by [JotaSXBR/obsidian-infinite-brain](https://github.com/JotaSXBR/obsidian-infinite-brain), inspired by [AI Impact — How to Build an Infinite Brain with AI](https://www.youtube.com/watch?v=z02Y-1OvWSM).
+
+[MIT](LICENSE)
