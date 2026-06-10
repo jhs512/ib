@@ -28,7 +28,7 @@
 | 명령 | 하는 일 |
 |---|---|
 | `/setup-ib` | 임의의 repo/폴더에 볼트 운영 컨텍스트 셋업 (최초 1회) |
-| `/init-vault` | 완전한 볼트 스캐폴딩 — 폴더 17개, 시스템 스키마, 템플릿, 예시 노드 |
+| `/init-vault` | 완전한 볼트 스캐폴딩 — 폴더 17개, 시스템 스키마, 템플릿, 예시 노드 (보통 `/setup-ib`가 대신 호출) |
 | `/convert-note` | `raw/`의 원자료를 원자적 타입 노드로 분해 |
 | `/query-vault` | 그래프 탐색으로 질의응답 — 토큰 절약형 범위 검색 |
 | `/organize-vault` | 대화형 감사: 고아 노드, 모순, 신뢰도 갭, 태그 난립 |
@@ -59,12 +59,12 @@ npx skills@latest add jhs512/ib -a claude-code
 ## 퀵스타트
 
 ```
-1.  /setup-ib          # 1회 — 에이전트에게 "이 폴더는 볼트"라고 알림
-2.  /init-vault        # 폴더·스키마·템플릿·예시 노드 2개 스캐폴딩
-3.  raw/에 아무거나 투하   (아티클, 회의록, 녹취록 — 파일명만 잘 지으면 끝)
-4.  /convert-note      # raw 파일 → 엣지로 연결된 원자적 타입 노드
-5.  /query-vault       # 질문하면 에이전트가 그래프를 탐색
-6.  /schedule weekly /vault-health auto    # 선택: 스스로 관리되는 기억
+1.  /setup-ib          # 1회 — 기본값 설정, 운영 블록 작성, 볼트 스캐폴딩까지
+                       # (/init-vault를 대신 실행)
+2.  raw/에 아무거나 투하   (아티클, 회의록, 녹취록 — 파일명만 잘 지으면 끝)
+3.  /convert-note      # raw 파일 → 엣지로 연결된 원자적 타입 노드
+4.  /query-vault       # 질문하면 에이전트가 그래프를 탐색
+5.  /schedule weekly /vault-health auto    # 선택: 스스로 관리되는 기억
 ```
 
 언제든 같은 폴더를 Obsidian으로 열어보세요 — Graph View가 에이전트의 기억을 라이브 노드 맵으로 그려줍니다.

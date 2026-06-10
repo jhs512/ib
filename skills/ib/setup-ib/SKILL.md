@@ -14,6 +14,8 @@ Scaffold the per-vault configuration that the **ib** skills assume:
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write. Reference: [JotaSXBR/obsidian-infinite-brain](https://github.com/JotaSXBR/obsidian-infinite-brain).
 
+This skill is the entry point for setting up ib in any directory — fresh or existing. `/init-vault` is the pure scaffolder it delegates to for stamping out the folder structure; don't point users at `/init-vault` directly for setup.
+
 ## Process
 
 ### 1. Explore
@@ -80,7 +82,7 @@ Write the block using the seed in this skill folder as a starting point — [vau
 
 Then ensure the `_system/` entry points exist:
 
-- If the user opted into `/init-vault`, invoke it in the chosen location and let it create everything.
+- If the user opted into `/init-vault`, invoke it in the chosen location, passing along the namespace from Section B so it doesn't re-ask, and skip its operating-block step — the CLAUDE.md/AGENTS.md block is this skill's job and was just written above.
 - Otherwise seed the minimum so the other ib skills have something to read: `_system/AGENTS.md` and `_system/INDEX.md` (empty per-type tables). For `AGENTS.md`, copy the seed in this skill folder — [vault-agents-template.md](./vault-agents-template.md) — substituting `<namespace>` from Section B; it carries the full operating rules (taxonomy, visibility model, frontmatter schema, log-writing rules, prohibited actions, first-session protocol). Leave any existing `_system/` file untouched.
 
 ### 5. Done

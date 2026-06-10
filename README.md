@@ -28,7 +28,7 @@ Long, loosely-linked documents are fine for humans but broken for agents: they r
 | Command | What it does |
 |---|---|
 | `/setup-ib` | Wire the vault operating context into any repo/folder (run once, first) |
-| `/init-vault` | Scaffold a complete vault — 17 folders, system schema, templates, example nodes |
+| `/init-vault` | Scaffold a complete vault — 17 folders, system schema, templates, example nodes (usually invoked for you by `/setup-ib`) |
 | `/convert-note` | Decompose raw material (`raw/`) into atomic typed nodes |
 | `/query-vault` | Answer questions via graph traversal — token-cheap scoped retrieval |
 | `/organize-vault` | Interactive audit: orphans, contradictions, confidence gaps, taxonomy drift |
@@ -59,13 +59,13 @@ npx skills@latest add jhs512/ib -a claude-code
 ## Quickstart
 
 ```
-1.  /setup-ib          # once — tells the agent "this folder is a vault"
-2.  /init-vault        # scaffold folders, schema, templates, 2 example nodes
-3.  Drop anything into raw/   (articles, meeting notes, transcripts — a
+1.  /setup-ib          # once — sets defaults, writes the operating block, and
+                       # scaffolds the vault (runs /init-vault for you)
+2.  Drop anything into raw/   (articles, meeting notes, transcripts — a
                                descriptive filename is enough)
-4.  /convert-note      # raw file → atomic typed nodes, wired with edges
-5.  /query-vault       # ask questions; the agent traverses the graph
-6.  /schedule weekly /vault-health auto    # optional: self-maintaining memory
+3.  /convert-note      # raw file → atomic typed nodes, wired with edges
+4.  /query-vault       # ask questions; the agent traverses the graph
+5.  /schedule weekly /vault-health auto    # optional: self-maintaining memory
 ```
 
 Open the same folder in Obsidian at any point — Graph View renders your agent's memory as a live node map.
