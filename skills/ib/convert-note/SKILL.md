@@ -14,6 +14,7 @@ You are ingesting raw content from the `raw/` folder into the Infinite Brain kno
 ## Steps
 
 1. Ask: "Which file in `raw/` should I convert? (or 'all' to process everything)"
+   - Source files need no pre-organization — a descriptive filename (e.g. `2026-05-15-karpathy-llm-wiki.md`) is enough; tagging and classification happen here, not in `raw/`.
 2. Scan the target file(s) with Read. Treat source files as immutable — do not modify them.
 3. Decompose into atomic nodes — one concept per node, 50-300 words each. Never exceed 300 words: longer nodes defeat scoped retrieval.
 4. For each node:
