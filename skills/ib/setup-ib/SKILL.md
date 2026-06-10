@@ -53,9 +53,9 @@ Default: `personal`. Ask the user for their starting namespace.
 
 **Section C — Default visibility.**
 
-> Explainer: Every node carries a `visibility` — `public` (freely traversable, included in summaries/exports), `private` (owner-only, excluded from shared exports), or `sensitive` (content redacted in any generated summary; only the title may surface). The skills apply this default to new nodes.
+> Explainer: Every node carries a `visibility` — `public` (safe across namespaces and general answers), `namespace` (used only when the task matches the node's namespace), `private` (used only when the human explicitly asks for that private context), or `system` (agent-facing operating rules, never presented as user content). The skills apply this default to new nodes.
 
-Default: `public`. Confirm or override.
+Default: `public` (use `namespace` if the vault will mix several areas — upstream recommends `namespace` when unsure). Confirm or override.
 
 ### 3. Confirm and edit
 
@@ -81,7 +81,7 @@ Write the block using the seed in this skill folder as a starting point — [vau
 Then ensure the `_system/` entry points exist:
 
 - If the user opted into `/init-vault`, invoke it in the chosen location and let it create everything.
-- Otherwise seed the minimum so the other ib skills have something to read: `_system/AGENTS.md` (operating rules — node/edge taxonomy, visibility model, frontmatter schema, prohibited actions) and `_system/INDEX.md` (empty per-type tables). Leave any existing `_system/` file untouched.
+- Otherwise seed the minimum so the other ib skills have something to read: `_system/AGENTS.md` and `_system/INDEX.md` (empty per-type tables). For `AGENTS.md`, copy the seed in this skill folder — [vault-agents-template.md](./vault-agents-template.md) — substituting `<namespace>` from Section B; it carries the full operating rules (taxonomy, visibility model, frontmatter schema, log-writing rules, prohibited actions, first-session protocol). Leave any existing `_system/` file untouched.
 
 ### 5. Done
 

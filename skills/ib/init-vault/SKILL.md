@@ -23,7 +23,7 @@ You are creating a new Infinite Brain vault from scratch in the current director
    - `EDGE-TYPES.md` — definitions for all 10 edge types
    - `FRONTMATTER-SCHEMA.md` — full field reference
    - `LOCAL-TYPES.md` — placeholder for custom types
-   - `AGENTS.md` — agent operating rules
+   - `AGENTS.md` — agent operating rules. Copy the seed from the setup-ib skill folder (`../setup-ib/vault-agents-template.md`, relative to this SKILL.md), substituting `<namespace>` with the user's answer from step 1.
    - `_prompts/` — empty folder (skills replace these)
 5. Create `_templates/Template - Infinite Node.md` with empty frontmatter.
 6. Create `CLAUDE.md` at root pointing agents to `_system/AGENTS.md` and the 4 skills.

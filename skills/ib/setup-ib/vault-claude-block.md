@@ -24,8 +24,10 @@ Read `_system/AGENTS.md` before any vault operation — it defines the full node
 ### Quick reference
 
 - Default namespace: `<namespace>`
-- Default visibility: `<visibility>`
-- Node types: `pillar decision concept question playbook task event pattern hypothesis fact source bookmark note contact reference custom`
+- Default visibility: `<visibility>` (model: `public` | `namespace` | `private` | `system`)
+- Node types: `pillar decision concept question playbook task event pattern hypothesis fact source bookmark note contact reference custom log`
 - Edge types: `related_to depends_on derived_from contradicts supports part_of preceded_by followed_by authored_by tagged_with`
 - Entry point for agents: `_system/INDEX.md` — every new node must update it
 - Never leave `edges: []` empty on an established node
+- `raw/` is immutable source material — never edit it; `/convert-note` moves processed originals to `raw/processed/`
+- Every skill run writes a log node to `logs/` (reduced 8-field schema; never indexed, never edited)
