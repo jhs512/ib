@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg" alt="Claude Code Plugin">
   <img src="https://img.shields.io/badge/Skills-6-orange.svg" alt="6 Skills">
   <img src="https://img.shields.io/badge/Vault-Obsidian_호환-7c3aed.svg" alt="Obsidian Compatible">
-  <a href="https://github.com/jhs512/skills/stargazers"><img src="https://img.shields.io/github/stars/jhs512/skills?style=social" alt="GitHub Stars"></a>
+  <a href="https://github.com/jhs512/ib/stargazers"><img src="https://img.shields.io/github/stars/jhs512/ib?style=social" alt="GitHub Stars"></a>
 </p>
 
 # Infinite Brain — AI 에이전트를 위한 영구적·타입 기반 기억
@@ -39,21 +39,21 @@
 ### Claude Code 플러그인 (마켓플레이스)
 
 ```shell
-/plugin marketplace add jhs512/skills
-/plugin install infinite-brain@jhs512-skills
+/plugin marketplace add jhs512/ib
+/plugin install infinite-brain@ib
 ```
 
 ### skills CLI (Claude Code · Codex · Cursor · OpenCode)
 
 ```bash
 # 전부 설치
-npx skills@latest add jhs512/skills --all
+npx skills@latest add jhs512/ib --all
 
 # 골라서 설치
-npx skills@latest add jhs512/skills --skill init-vault --skill query-vault
+npx skills@latest add jhs512/ib --skill init-vault --skill query-vault
 
 # 특정 에이전트에만
-npx skills@latest add jhs512/skills -a claude-code
+npx skills@latest add jhs512/ib -a claude-code
 ```
 
 ## 퀵스타트

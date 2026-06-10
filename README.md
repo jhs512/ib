@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg" alt="Claude Code Plugin">
   <img src="https://img.shields.io/badge/Skills-6-orange.svg" alt="6 Skills">
   <img src="https://img.shields.io/badge/Vault-Obsidian_Compatible-7c3aed.svg" alt="Obsidian Compatible">
-  <a href="https://github.com/jhs512/skills/stargazers"><img src="https://img.shields.io/github/stars/jhs512/skills?style=social" alt="GitHub Stars"></a>
+  <a href="https://github.com/jhs512/ib/stargazers"><img src="https://img.shields.io/github/stars/jhs512/ib?style=social" alt="GitHub Stars"></a>
 </p>
 
 # Infinite Brain — permanent, typed memory for your AI agent
@@ -39,21 +39,21 @@ Long, loosely-linked documents are fine for humans but broken for agents: they r
 ### As a Claude Code plugin (marketplace)
 
 ```shell
-/plugin marketplace add jhs512/skills
-/plugin install infinite-brain@jhs512-skills
+/plugin marketplace add jhs512/ib
+/plugin install infinite-brain@ib
 ```
 
 ### With the skills CLI (Claude Code · Codex · Cursor · OpenCode)
 
 ```bash
 # everything
-npx skills@latest add jhs512/skills --all
+npx skills@latest add jhs512/ib --all
 
 # or pick skills
-npx skills@latest add jhs512/skills --skill init-vault --skill query-vault
+npx skills@latest add jhs512/ib --skill init-vault --skill query-vault
 
 # or target one agent
-npx skills@latest add jhs512/skills -a claude-code
+npx skills@latest add jhs512/ib -a claude-code
 ```
 
 ## Quickstart
