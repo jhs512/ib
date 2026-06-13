@@ -10,7 +10,7 @@ Scaffold the per-vault configuration that the **ib** skills assume:
 
 - **Operating block** — an `## Infinite Brain vault` section in `CLAUDE.md` (or `AGENTS.md`) so every agent knows this directory is a typed-node / typed-edge knowledge graph, and which `/`-commands operate on it.
 - **`_system/` entry points** — `AGENTS.md` (taxonomy, visibility model, frontmatter schema, prohibited actions) and `INDEX.md` (the master node index every new node must update).
-- **Defaults** — the starting namespace and the default node visibility.
+- **Defaults** — the starting namespace, the default node visibility, and the document language.
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write. Reference: [JotaSXBR/obsidian-infinite-brain](https://github.com/JotaSXBR/obsidian-infinite-brain).
 
@@ -59,11 +59,17 @@ Default: `personal`. Ask the user for their starting namespace.
 
 Default: `public` (use `namespace` if the vault will mix several areas — upstream recommends `namespace` when unsure). Confirm or override.
 
+**Section D — Document language.**
+
+> Explainer: This sets the language the skills write **human-readable node content** in — titles, summaries, body prose, edge `note` fields, and the text of query answers and health reports. It does **not** change the vault's structural vocabulary: frontmatter field keys (`id`, `title`, `type`, …), the 17 node types, the 10 edge types, the visibility values (`public`/`namespace`/`private`/`system`), `id` slugs, namespace names, tags, folder names, and skill/command names always stay in their canonical English form so cross-references, file paths, and the taxonomy remain stable. Choosing a non-English language means everything *except* that fixed terminology is written in the chosen language.
+
+Default: `English`. Ask the user which language node content should be written in (e.g. `English`, `한국어 (Korean)`). Record the answer as the document language.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
 
-- The `## Infinite Brain vault` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4), with `<namespace>` and `<visibility>` filled in.
+- The `## Infinite Brain vault` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4), with `<namespace>`, `<visibility>`, and `<language>` filled in.
 - The list of `_system/` files that will be created (if any), or "already present — leaving as-is".
 
 Let them edit before writing.
@@ -78,13 +84,13 @@ Let them edit before writing.
 
 Never create `AGENTS.md` when `CLAUDE.md` already exists (or vice versa) — always edit the one that's already there. If an `## Infinite Brain vault` block already exists in the chosen file, update its contents in place rather than appending a duplicate. Don't overwrite the user's edits to surrounding sections.
 
-Write the block using the seed in this skill folder as a starting point — [vault-claude-block.md](./vault-claude-block.md) — substituting the namespace and visibility from Section B/C. When the vault lives in a subfolder, note the path in the block's first line ("The `vault/` directory is an AI-first knowledge-graph vault…").
+Write the block using the seed in this skill folder as a starting point — [vault-claude-block.md](./vault-claude-block.md) — substituting the namespace, visibility, and document language from Section B/C/D. When the vault lives in a subfolder, note the path in the block's first line ("The `vault/` directory is an AI-first knowledge-graph vault…").
 
 Then ensure the `_system/` entry points exist:
 
-- If the user opted into `/init-vault`, invoke it in the chosen location, passing along the namespace from Section B so it doesn't re-ask, and skip its operating-block step — the CLAUDE.md/AGENTS.md block is this skill's job and was just written above.
-- Otherwise seed the minimum so the other ib skills have something to read: `_system/AGENTS.md` and `_system/INDEX.md` (empty per-type tables). For `AGENTS.md`, copy the seed in this skill folder — [vault-agents-template.md](./vault-agents-template.md) — substituting `<namespace>` from Section B; it carries the full operating rules (taxonomy, visibility model, frontmatter schema, log-writing rules, prohibited actions, first-session protocol). Leave any existing `_system/` file untouched.
+- If the user opted into `/init-vault`, invoke it in the chosen location, passing along the namespace from Section B and the document language from Section D so it doesn't re-ask, and skip its operating-block step — the CLAUDE.md/AGENTS.md block is this skill's job and was just written above.
+- Otherwise seed the minimum so the other ib skills have something to read: `_system/AGENTS.md` and `_system/INDEX.md` (empty per-type tables). For `AGENTS.md`, copy the seed in this skill folder — [vault-agents-template.md](./vault-agents-template.md) — substituting `<namespace>` from Section B and `<language>` from Section D; it carries the full operating rules (taxonomy, visibility model, frontmatter schema, document-language rule, log-writing rules, prohibited actions, first-session protocol). Leave any existing `_system/` file untouched.
 
 ### 5. Done
 
-Tell the user setup is complete and which ib skills now have the context they need (`init-vault`, `convert-note`, `query-vault`, `organize-vault`, `vault-health`). Mention they can edit the `## Infinite Brain vault` block or `_system/*.md` directly later — re-running this skill is only needed to change the namespace/visibility defaults or relocate the vault.
+Tell the user setup is complete and which ib skills now have the context they need (`init-vault`, `convert-note`, `query-vault`, `organize-vault`, `vault-health`). Mention they can edit the `## Infinite Brain vault` block or `_system/*.md` directly later — re-running this skill is only needed to change the namespace/visibility/language defaults or relocate the vault.

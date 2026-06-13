@@ -44,3 +44,4 @@ You are ingesting raw content from the `raw/` folder into the Infinite Brain kno
 - `namespace`: infer from the content domain.
 - Do NOT create nodes with `type: raw` — `raw/` is only an inbox.
 - Always check `_system/INDEX.md` to avoid duplicate IDs before writing.
+- Write `title`, `summary`, body prose, and edge `note` fields in the vault's document language (see `_system/AGENTS.md` → Document Language); keep `id` slugs, `type`, edge type names, `visibility`, `namespace`, and `tags` in canonical English. Note content may be in a different language than the source file — convert it.

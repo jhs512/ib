@@ -1,7 +1,8 @@
 <!--
 Seed template for the vault's `_system/AGENTS.md` — the operating rules every
 agent reads before touching the vault. Used by setup-ib (minimal seeding path)
-and init-vault (step 4). Replace <namespace> with the vault's default namespace.
+and init-vault (step 4). Replace <namespace> with the vault's default namespace
+and <language> with the vault's document language.
 Adapted from upstream: JotaSXBR/obsidian-infinite-brain `_system/AGENTS.md`.
 -->
 
@@ -21,6 +22,28 @@ Every node declares `visibility` so agents can filter context before reading con
 | `system` | Agent-facing operating rules; never present as user content unless asked |
 
 `raw/` files do not need visibility until converted into typed nodes.
+
+## Document Language
+
+The vault's **document language** is `<language>`. Write all human-readable node content in this language:
+
+- `title`, `summary`, and the node body prose
+- edge `note` fields
+- query answers, synthesis nodes, and health-report text any skill produces for the human
+
+The dividing line is **system vocabulary vs. everyday prose**: anything the *machine* keys on — a type name, an enum value, an identifier, a field name the schema reads — is fixed terminology and stays in canonical English; anything a *human* reads as a sentence gets translated. When in doubt, ask "does a skill match on this exact string?" — if yes, keep it English.
+
+Keep the **structural vocabulary** in its canonical English form — never translate it, because file paths, cross-references, and the taxonomy depend on it staying stable:
+
+- frontmatter field **keys** (`id`, `title`, `type`, `namespace`, `visibility`, `summary`, `confidence`, `edges`, …)
+- the 17 **node type** values (`pillar`, `decision`, … and **`log`**) and the 10 **edge type** values
+- **visibility** values (`public`, `namespace`, `private`, `system`)
+- log-node values the schema keys on — `operation` (the skill name, e.g. `convert-note`) and `affected_nodes` (the `id` list)
+- `id` slugs (kebab-case ASCII), `namespace` names, `tags` (lowercase kebab-case), folder names, and skill/command names (`/convert-note`, …)
+
+A log node still has a human-readable side — its `summary` and body prose follow the document language; only the system fields above stay English.
+
+So when the document language is not English, everything the human reads is in that language *except* the fixed terminology above. If `<language>` is `English`, this rule is a no-op.
 
 ## Node Types (17)
 

@@ -60,6 +60,8 @@ Collect findings only. Do not modify any node during this phase.
 
 Run in both modes. This is the only write operation in auto mode (besides decay).
 
+Write the report's human-readable text — `title`, `summary`, issue descriptions, suggested fixes — in the vault's document language (see `_system/AGENTS.md` → Document Language). Keep frontmatter keys, `id`, `type`, `visibility`, `namespace`, tags, and file paths in canonical English.
+
 Create `notes/note-vault-health-YYYYMMDD.md`:
 
 ```yaml

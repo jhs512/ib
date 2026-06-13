@@ -33,7 +33,7 @@ You are answering a question by navigating the Infinite Brain knowledge graph.
    - `derived_from` → trace conclusions to evidence
    - `depends_on` → find prerequisites
 6. Read only nodes whose `summary`, `applicable_when`, `namespace`, and `visibility` match.
-7. Synthesize and output in this format:
+7. Synthesize and output in this format. Write the answer prose, source descriptions, and any saved synthesis node in the vault's document language (see `_system/AGENTS.md` → Document Language); keep `[[node-id]]` references, type names, and other structural vocabulary in canonical English:
 
 ---
 

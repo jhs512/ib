@@ -46,6 +46,8 @@ Flag summaries over 200 chars or 3+ sentences, empty or placeholder text ("TBD",
 
 ## Output Format
 
+Write the report's prose — issue descriptions, suggested fixes, action text — in the vault's document language (see `_system/AGENTS.md` → Document Language). Keep file paths, `id` slugs, type/edge/visibility names, and tags in canonical English.
+
 ```
 ## Vault Health — [Date]
 
