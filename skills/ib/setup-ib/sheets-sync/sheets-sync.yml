@@ -1,0 +1,51 @@
+# Infinite Brain 볼트 → Google Sheet 동기화 (push 시 변경분만 반영).
+# setup-ib 스킬이 이 파일을 볼트 레포의 .github/workflows/sheets-sync.yml 로 복사한다.
+#
+# 필요 설정(레포 Settings에서):
+#   - Secret  GOOGLE_SA_KEY   : 서비스 계정 JSON 내용 전체
+#   - Variable SPREADSHEET_ID  : 대상 스프레드시트 ID
+#   - Variable WORKSHEET_GID   : (선택) 대상 탭 gid. 없으면 첫 번째 탭
+name: Sheets Sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/*.md"           # 노드 변경 시에만
+      - "sync.py"
+      - "requirements.txt"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "계획만 출력(쓰기 없음)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: sheets-sync          # 동시 실행 직렬화(레이스 방지)
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Sync vault to sheet
+        env:
+          GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
+          SPREADSHEET_ID: ${{ vars.SPREADSHEET_ID }}
+          WORKSHEET_GID: ${{ vars.WORKSHEET_GID }}
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            python sync.py --vault . --dry-run
+          else
+            python sync.py --vault .
+          fi

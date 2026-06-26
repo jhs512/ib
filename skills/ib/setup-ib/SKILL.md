@@ -1,6 +1,6 @@
 ---
 name: setup-ib
-description: Sets up the Infinite Brain vault operating context in a repo or folder — writes an `## Infinite Brain vault` block (operating rules + ib skills table + node/edge quick reference) into CLAUDE.md/AGENTS.md and ensures the `_system/` scaffolding exists, so the ib skills know this directory is a knowledge-graph vault. Run once before first use of `init-vault`, `convert-note`, `query-vault`, `organize-vault`, or `vault-health` — or if those skills appear to be missing vault context (taxonomy, namespace, `_system/` entry points).
+description: Sets up the Infinite Brain vault operating context in a repo or folder — writes an `## Infinite Brain vault` block (operating rules + ib skills table + node/edge quick reference) into CLAUDE.md/AGENTS.md and ensures the `_system/` scaffolding exists, so the ib skills know this directory is a knowledge-graph vault. Run once before first use of `init-vault`, `convert-note`, `query-vault`, `organize-vault`, or `vault-health` — or if those skills appear to be missing vault context (taxonomy, namespace, `_system/` entry points). Can also wire an (off-by-default) Google Sheets mirror — a hash-based one-way sync of the vault to a spreadsheet via GitHub Actions.
 disable-model-invocation: true
 ---
 
@@ -65,6 +65,12 @@ Default: `public` (use `namespace` if the vault will mix several areas — upstr
 
 Default: `English`. Ask the user which language node content should be written in (e.g. `English`, `한국어 (Korean)`). Record the answer as the document language.
 
+**Section E — Google Sheets mirror (optional).**
+
+> Explainer: Optionally mirror the vault to a Google Sheet — a tabular **read view** (one row per node: the 16 frontmatter fields + `body` + a hidden `_hash`). The markdown stays the source of truth; a GitHub Action re-syncs **only changed nodes** on push (content-hash based, no cache file — the baseline hash lives in the sheet's hidden `_hash` column). Useful for filtering/aggregation/dashboards and sharing with non-technical viewers. Requires a Google Cloud service account and a target spreadsheet, and the vault being a GitHub repo.
+
+Default: **skip**. If the user opts in, carry out step 5 (Google Sheets mirror) after writing the vault context. Templates and the full rationale: [sheets-sync/](./sheets-sync/), [sheets-sync/README.md](./sheets-sync/README.md).
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
@@ -91,6 +97,37 @@ Then ensure the `_system/` entry points exist:
 - If the user opted into `/init-vault`, invoke it in the chosen location, passing along the namespace from Section B and the document language from Section D so it doesn't re-ask, and skip its operating-block step — the CLAUDE.md/AGENTS.md block is this skill's job and was just written above.
 - Otherwise seed the minimum so the other ib skills have something to read: `_system/AGENTS.md` and `_system/INDEX.md` (empty per-type tables). For `AGENTS.md`, copy the seed in this skill folder — [vault-agents-template.md](./vault-agents-template.md) — substituting `<namespace>` from Section B and `<language>` from Section D; it carries the full operating rules (taxonomy, visibility model, frontmatter schema, document-language rule, log-writing rules, prohibited actions, first-session protocol). Leave any existing `_system/` file untouched.
 
-### 5. Done
+### 5. Google Sheets mirror (optional)
 
-Tell the user setup is complete and which ib skills now have the context they need (`init-vault`, `convert-note`, `query-vault`, `organize-vault`, `vault-health`). Mention they can edit the `## Infinite Brain vault` block or `_system/*.md` directly later — re-running this skill is only needed to change the namespace/visibility/language defaults or relocate the vault.
+Only if the user opted in at Section E. The markdown vault stays the source of truth; the sheet is a generated view synced by GitHub Actions. Templates: [sheets-sync/](./sheets-sync/); rationale (incl. why there is no cache file and how it stays correct in stateless CI): [sheets-sync/README.md](./sheets-sync/README.md).
+
+Prerequisites: the vault is a GitHub repo and `gh` is authenticated with `repo` + `workflow` scope; the user has/owns a target Google Spreadsheet.
+
+**5a. Copy templates into the vault repo.**
+- `sheets-sync/sync.py` → vault root `sync.py`
+- `sheets-sync/requirements.txt` → vault root `requirements.txt` (merge if one already exists)
+- `sheets-sync/sheets-sync.yml` → `.github/workflows/sheets-sync.yml`
+- Ensure `.gitignore` contains `*.json` (service-account keys must never be committed).
+- If the vault lives in a subfolder, set `--vault <folder>` in the workflow's run step.
+
+**5b. Create the Google Cloud service account (browser-driven).** Drive the browser, pausing for the human-only click:
+1. Create a GCP project (`console.cloud.google.com/projectcreate`), then switch to it.
+2. Enable the **Google Sheets API** for the project.
+3. Create a **service account**; record its `client_email`.
+4. Create a **JSON key** — ★ **the human clicks the final "Create" / accepts the download** (it is a credential download). Save the file *outside* the repo.
+
+**5c. Share the spreadsheet — ★ human only.** The user opens the target spreadsheet → **Share** → adds the service-account `client_email` as **Editor**. Modifying sharing/permissions is a human action — never do it for them. Without this the API returns 403.
+
+**5d. Wire the repo via `gh`.**
+- `gh secret set GOOGLE_SA_KEY < /path/to/key.json` (uploaded encrypted; never printed or committed).
+- `gh variable set SPREADSHEET_ID --body <spreadsheet-id>` (and `WORKSHEET_GID` if targeting a specific tab).
+
+**5e. Initial sync + push.**
+- Verify locally first: `SPREADSHEET_ID=… GOOGLE_APPLICATION_CREDENTIALS=…/key.json python sync.py --vault <vault> --dry-run`, then run without `--dry-run`.
+- Commit the templates and push → the **Sheets Sync** Action reflects only changed nodes on every subsequent push.
+
+Report what was created (project id, service-account email, secret/variable names) and remind the user the key file is a live credential to keep safe (or rotate later in GCP).
+
+### 6. Done
+
+Tell the user setup is complete and which ib skills now have the context they need (`init-vault`, `convert-note`, `query-vault`, `organize-vault`, `vault-health`). If the Google Sheets mirror was wired, note that pushes now auto-sync changed nodes to the sheet. Mention they can edit the `## Infinite Brain vault` block or `_system/*.md` directly later — re-running this skill is only needed to change the namespace/visibility/language defaults, relocate the vault, or set up the sheets mirror.
