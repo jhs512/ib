@@ -84,6 +84,26 @@ python sync.py --vault . --rebuild  # wipe the tabs and regenerate from markdown
 
 Templates and full rationale: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
 
+### Troubleshooting
+
+| Symptom | Cause → fix |
+|---|---|
+| `403 PERMISSION_DENIED` | The sheet isn't shared with the service account → **Share** it with the `client_email` as **Editor**. |
+| `SPREADSHEET_ID is required` | Set the `SPREADSHEET_ID` repo variable (or env var for local runs). |
+| Sync wrote to / wiped the wrong tab | Tabs are matched **by name** (`_data` / `_edges`) and it never falls back to the first tab — keep those names or set `NODE_TAB` / `EDGE_TAB`. |
+| "no changes" but you edited markdown | The file isn't a node (needs `id` + `type` frontmatter), or it lives under a skipped dir (`_system`, `_templates`, `raw`, …). |
+| Rows look empty in the browser | A long `body` makes the row very tall — the data is there; scroll or check the formula bar (turn off text-wrap on the `body` column for a compact view). |
+| Auth fails after working before | The `GOOGLE_SA_KEY` secret is malformed (must be the full JSON) or the key was revoked → rotate it (see FAQ). |
+| Sheet looks out of sync / corrupted | Run `python sync.py --vault . --rebuild` to wipe and regenerate from markdown. |
+
+### FAQ
+
+- **Can I edit the sheet directly?** No — it's a generated view; manual edits are overwritten on the next sync (and rows not in the vault are deleted). Author in markdown.
+- **Where do I add knowledge, then?** In the vault — e.g. drop material in `raw/` and run `/convert-note`.
+- **Is my service-account key safe in a public repo?** Yes — it's stored as an encrypted GitHub **secret**, never committed (`*.json` is git-ignored); the key file stays on your machine.
+- **How do I rotate the key?** In GCP, create a new JSON key for the service account, run `gh secret set GOOGLE_SA_KEY < new-key.json`, then delete the old key.
+- **How does an agent use the sheet?** It reads `_data` (nodes) and `_edges` (relations) — `summary` for scanning, edges for traversal (`source=X` / `target=X`), `body` for depth.
+
 ## Install
 
 ### As a Claude Code plugin (marketplace)
