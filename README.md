@@ -36,18 +36,53 @@ Long, loosely-linked documents are fine for humans but broken for agents: they r
 
 ## Google Sheets mirror (optional)
 
-Mirror the vault to a Google Sheet — a live, Google-native **read view** of your graph (great for filtering/dashboards, sharing with non-technical viewers, or grounding a conversational agent). The markdown stays the source of truth; a GitHub Action re-syncs **only changed nodes** on push (content-hash based, no cache file — the baseline hash lives in a hidden column, so it's correct even on stateless CI runners).
+Beyond Obsidian, the vault can mirror itself to a **Google Sheet** — a live, Google-native **read view** of your knowledge graph. The markdown is always the source of truth; the sheet is a generated projection that's easy to filter, build dashboards on, share with non-technical people, or hand to a conversational agent (e.g. a Gemini app reading the sheet to talk *over* your graph).
 
-`/setup-ib` wires it end-to-end: it drives the browser to create the Google Cloud service account, sets the encrypted `GOOGLE_SA_KEY` secret + `SPREADSHEET_ID`, and installs the sync. Two human-only steps remain by design (downloading the key, sharing the sheet).
+```
+markdown vault (truth) ──push──▶ GitHub Action ──▶ sync.py ──▶ Google Sheet (view)
+  convert-note writes nodes         on *.md change   hash diff      _data · _edges
+```
 
-The sheet is normalized for graph traversal across two tabs:
+### What it syncs
 
-| Tab | Holds |
-|---|---|
-| `_data` | one row per node (frontmatter fields + `body`); `tags` / `related` are plain comma-separated text |
-| `_edges` | normalized relations `source · type · target · weight · note` — forward (`source=X`) and backlink (`target=X`) lookups are simple filters |
+Two tabs, normalized for graph traversal:
 
-Run modes: incremental (default), `--dry-run` (preview), `--rebuild` (wipe + regenerate from markdown). Details: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
+| Tab | One row per | Columns |
+|---|---|---|
+| `_data` | node | `id, title, type, namespace, visibility, summary, auto_inject, applicable_when, confidence, verified_at, verified_by, staleness_signal, tags, related, source_url, body` (+ hidden `_hash`) |
+| `_edges` | relation | `source, type, target, weight, note` (+ hidden `_hash`) |
+
+- `tags` / `related` are plain **comma-separated text** — no JSON inside cells.
+- Relations live in `_edges`, derived automatically from each node's `edges:` frontmatter, so **both directions are one filter away**: outgoing = `source = X`, backlinks = `target = X`.
+- A `_meta` tab (if present) documents the schema for humans/agents and is left untouched by sync.
+
+### How sync stays cheap and correct
+
+- **Incremental by content hash.** Each node/edge row is normalized and hashed; only rows whose hash changed are written. Adds/deletes are detected by key-set diff (node key = `id`, edge key = `source|type|target`).
+- **No cache file.** The baseline hash lives in each tab's hidden `_hash` column, not a local file. GitHub Actions runners are ephemeral, so a local cache would vanish between runs — keeping state *in the sheet* makes it correct on stateless CI and **self-healing** if someone hand-edits the sheet.
+- **Minimal API calls.** One read + one `batch_update` / `append_rows` / `deleteDimension` per tab.
+
+### Setup (via `/setup-ib`)
+
+`/setup-ib` wires the whole thing end-to-end:
+
+1. Create a new spreadsheet (or point at an existing one).
+2. Drive the browser to create a Google Cloud project, enable the Sheets API, and a service account. **★ you click the JSON-key download** (it's a credential).
+3. **★ you share the spreadsheet** with the service-account email as **Editor** (a permission change only you can make; without it the API returns 403).
+4. It sets the encrypted `GOOGLE_SA_KEY` secret + `SPREADSHEET_ID` variable and copies `sync.py` + the workflow into the repo.
+5. Push → the **Sheets Sync** Action reflects changed nodes/edges automatically.
+
+> Browser automation (e.g. Claude in Chrome) is required for the console steps — `/setup-ib` will tell you to enable it if it's missing, rather than walking you through the console by hand.
+
+### Run modes
+
+```bash
+python sync.py --vault .            # incremental (default) — only changed rows
+python sync.py --vault . --dry-run  # preview the plan, write nothing
+python sync.py --vault . --rebuild  # wipe the tabs and regenerate from markdown
+```
+
+Templates and full rationale: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
 
 ## Install
 

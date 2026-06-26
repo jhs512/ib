@@ -36,18 +36,53 @@
 
 ## Google Sheets 미러 (선택)
 
-볼트를 Google 시트로 미러링합니다 — 그래프의 살아있는 **읽기 뷰**(필터·대시보드, 비개발자 공유, 또는 대화형 에이전트의 그라운딩에 유용). 마크다운이 진실의 원천이고, GitHub Action이 push 때 **바뀐 노드만** 재동기화합니다(콘텐츠 해시 기반, 별도 캐시 파일 없음 — 기준 해시가 숨김 열에 있어 스테이트리스 CI에서도 정확).
+Obsidian과 별개로, 볼트를 **Google 시트**로 미러링할 수 있습니다 — 지식그래프의 살아있는 **읽기 뷰**입니다. 마크다운이 항상 진실의 원천이고, 시트는 거기서 생성되는 투영본이라 필터·대시보드, 비개발자 공유, 또는 대화형 에이전트에 넘기기(예: Gemini 앱이 시트를 읽고 그래프 *위에서* 대화) 좋습니다.
 
-`/setup-ib`가 전 과정을 엮어줍니다: 브라우저로 Google Cloud 서비스 계정을 만들고, 암호화된 `GOOGLE_SA_KEY` 시크릿 + `SPREADSHEET_ID`를 설정하고, 동기화를 설치합니다. 사람이 직접 할 단계는 설계상 둘뿐(키 다운로드, 시트 공유)입니다.
+```
+마크다운 볼트(원천) ──push──▶ GitHub Action ──▶ sync.py ──▶ Google 시트(뷰)
+  convert-note가 노드 저작        *.md 변경 시     해시 비교       _data · _edges
+```
 
-그래프 탐색에 맞춰 두 탭으로 정규화됩니다:
+### 무엇을 동기화하나
 
-| 탭 | 내용 |
-|---|---|
-| `_data` | 노드당 1행(프론트매터 필드 + `body`); `tags` / `related`는 JSON이 아닌 쉼표 구분 텍스트 |
-| `_edges` | 정규화된 관계 `source · type · target · weight · note` — 나가는(`source=X`)·들어오는(`target=X`) 탐색이 단순 필터 |
+그래프 탐색에 맞춰 두 탭으로 정규화:
 
-실행 모드: 증분(기본), `--dry-run`(미리보기), `--rebuild`(싹 비우고 마크다운 기준 재생성). 자세히: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
+| 탭 | 1행 단위 | 컬럼 |
+|---|---|---|
+| `_data` | 노드 | `id, title, type, namespace, visibility, summary, auto_inject, applicable_when, confidence, verified_at, verified_by, staleness_signal, tags, related, source_url, body` (+ 숨김 `_hash`) |
+| `_edges` | 관계 | `source, type, target, weight, note` (+ 숨김 `_hash`) |
+
+- `tags` / `related`는 셀 안 JSON이 아니라 **쉼표 구분 텍스트**.
+- 관계는 각 노드의 `edges:` 프론트매터에서 자동 추출되어 `_edges`에 저장 → **양방향이 필터 한 번**: 나가는 = `source = X`, 백링크 = `target = X`.
+- `_meta` 탭(있다면)은 사람·에이전트용 스키마 문서이며 sync가 건드리지 않음.
+
+### 왜 싸고 정확한가
+
+- **콘텐츠 해시 증분.** 노드/엣지 행을 정규화·해시하여 **바뀐 행만** 기록. 추가/삭제는 키 집합 비교(노드 키=`id`, 엣지 키=`source|type|target`).
+- **캐시 파일 없음.** 기준 해시가 각 탭의 숨김 `_hash` 열에 있음(로컬 파일 ❌). GitHub Actions 러너는 매번 새 VM이라 로컬 캐시는 사라짐 — 상태를 *시트에* 두어 스테이트리스 CI에서도 정확하고, 시트가 손편집돼도 **자가 교정**.
+- **최소 API 호출.** 탭당 읽기 1회 + `batch_update`/`append_rows`/`deleteDimension` 1회.
+
+### 셋업 (`/setup-ib`)
+
+`/setup-ib`가 전 과정을 엮어줍니다:
+
+1. 새 스프레드시트 생성(또는 기존 것 지정).
+2. 브라우저로 Google Cloud 프로젝트·Sheets API·서비스 계정 생성. **★ JSON 키 다운로드는 사람이 클릭**(자격증명).
+3. **★ 스프레드시트를 서비스 계정 이메일과 편집자로 공유**(권한 변경은 본인만 가능; 안 하면 403).
+4. 암호화된 `GOOGLE_SA_KEY` 시크릿 + `SPREADSHEET_ID` 변수 설정, `sync.py`·워크플로를 레포에 복사.
+5. push → **Sheets Sync** 액션이 변경된 노드/엣지를 자동 반영.
+
+> 콘솔 단계엔 브라우저 자동화(예: Claude in Chrome)가 필요합니다 — 없으면 `/setup-ib`가 수작업으로 끌고 가지 않고 "켜라"고 안내합니다.
+
+### 실행 모드
+
+```bash
+python sync.py --vault .            # 증분(기본) — 바뀐 행만
+python sync.py --vault . --dry-run  # 계획만 미리보기, 쓰기 없음
+python sync.py --vault . --rebuild  # 탭을 싹 비우고 마크다운 기준 재생성
+```
+
+템플릿·전체 근거: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
 
 ## 설치
 
