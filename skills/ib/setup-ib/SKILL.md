@@ -109,9 +109,9 @@ Prerequisites: the vault is a GitHub repo and `gh` is authenticated with `repo` 
 
 **5b. Choose the target spreadsheet — new or existing.** Ask the user:
 - **Create a new sheet** (e.g. titled `지식` / "Knowledge") — preferred for a fresh vault. Create it by driving the browser to `sheets.new` (or via a Google Drive/Sheets tool if one is available). Capture the **spreadsheet ID** from the URL (`https://docs.google.com/spreadsheets/d/<ID>/edit`).
-- **Use an existing sheet** — ask for its URL or ID. If syncing into a specific tab rather than the first one, also capture the tab `gid` (the `#gid=<N>` / `?gid=<N>` in the URL) for `WORKSHEET_GID`.
+- **Use an existing sheet** — ask for its URL or ID; capture the **spreadsheet ID**.
 
-Record `SPREADSHEET_ID` (and `WORKSHEET_GID` if set). The sync uses 18 columns (16 frontmatter fields + `body` + hidden `_hash`); an existing sheet's first tab will be reshaped to that header on first sync, so prefer a dedicated/empty tab.
+Record `SPREADSHEET_ID`. The sync manages two tabs **by name** — `_data` (nodes: 15 frontmatter fields + `body` + hidden `_hash`; `tags`/`related` are comma-separated, not JSON) and `_edges` (normalized relations `source | type | target | weight | note`, auto-generated from each node's `edges` — enables forward `source=X` and backlink `target=X` traversal). Missing tabs are created; a `_meta` schema tab, if present, is left untouched. Override names with `NODE_TAB`/`EDGE_TAB`.
 
 **5c. Copy templates into the vault repo.**
 - `sheets-sync/sync.py` → vault root `sync.py`
@@ -135,7 +135,7 @@ Without this the sync fails with `403 PERMISSION_DENIED`. Confirm with the user 
 
 **5f. Wire the repo via `gh`.**
 - `gh secret set GOOGLE_SA_KEY < /path/to/key.json` (uploaded encrypted; never printed or committed).
-- `gh variable set SPREADSHEET_ID --body <spreadsheet-id>` (and `gh variable set WORKSHEET_GID --body <gid>` if a specific tab).
+- `gh variable set SPREADSHEET_ID --body <spreadsheet-id>` (tab names default to `_data`/`_edges`; set `NODE_TAB`/`EDGE_TAB` variables only to override).
 
 **5g. Initial sync + push.**
 - Verify locally first: `SPREADSHEET_ID=… GOOGLE_APPLICATION_CREDENTIALS=…/key.json python sync.py --vault <vault> --dry-run`, then run without `--dry-run`.

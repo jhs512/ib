@@ -4,7 +4,7 @@
 # 필요 설정(레포 Settings에서):
 #   - Secret  GOOGLE_SA_KEY   : 서비스 계정 JSON 내용 전체
 #   - Variable SPREADSHEET_ID  : 대상 스프레드시트 ID
-#   - Variable WORKSHEET_GID   : (선택) 대상 탭 gid. 없으면 첫 번째 탭
+#   탭 이름은 기본 _data(노드)/_edges(관계). 바꾸려면 NODE_TAB/EDGE_TAB 변수 추가.
 name: Sheets Sync
 
 on:
@@ -46,7 +46,6 @@ jobs:
         env:
           GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
           SPREADSHEET_ID: ${{ vars.SPREADSHEET_ID }}
-          WORKSHEET_GID: ${{ vars.WORKSHEET_GID }}
         run: |
           ARGS="--vault ."
           [ "${{ github.event.inputs.rebuild }}" = "true" ] && ARGS="$ARGS --rebuild"
