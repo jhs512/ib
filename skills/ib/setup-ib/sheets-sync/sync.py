@@ -15,7 +15,8 @@
 
 환경변수:
   SPREADSHEET_ID (필수)      대상 스프레드시트 ID
-  WORKSHEET_GID  (선택)      대상 탭 gid. 없으면 첫 번째 탭 사용
+  WORKSHEET_GID  (선택)      대상 탭 gid. 없으면 WORKSHEET_TITLE(기본 '_data') 탭
+  WORKSHEET_TITLE(선택)      대상 탭 이름 (기본 '_data') — gid 미지정 시 사용
   인증: GOOGLE_SA_KEY(JSON 내용) 또는 GOOGLE_APPLICATION_CREDENTIALS(파일 경로)
 
 사용:
@@ -124,7 +125,15 @@ def get_worksheet():
                  "GOOGLE_APPLICATION_CREDENTIALS 환경변수를 설정하세요.")
     sh = gspread.authorize(creds).open_by_key(spreadsheet_id)
     gid = os.environ.get("WORKSHEET_GID")
-    return sh.get_worksheet_by_id(int(gid)) if gid else sh.get_worksheet(0)
+    if gid:
+        return sh.get_worksheet_by_id(int(gid))
+    # gid 미지정 시 데이터 탭 이름으로(기본 '_data'). 첫 탭으로 폴백하지 않는다
+    # — 첫 탭이 _meta 같은 스키마 문서면 덮어쓰는 사고가 나기 때문.
+    title = os.environ.get("WORKSHEET_TITLE", "_data")
+    try:
+        return sh.worksheet(title)
+    except gspread.WorksheetNotFound:
+        sys.exit(f"대상 탭을 못 찾음. WORKSHEET_GID를 지정하거나 '{title}' 탭을 만드세요.")
 
 
 def read_sheet(ws):
