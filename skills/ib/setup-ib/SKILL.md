@@ -101,32 +101,47 @@ Then ensure the `_system/` entry points exist:
 
 Only if the user opted in at Section E. The markdown vault stays the source of truth; the sheet is a generated view synced by GitHub Actions. Templates: [sheets-sync/](./sheets-sync/); rationale (incl. why there is no cache file and how it stays correct in stateless CI): [sheets-sync/README.md](./sheets-sync/README.md).
 
-Prerequisites: the vault is a GitHub repo and `gh` is authenticated with `repo` + `workflow` scope; the user has/owns a target Google Spreadsheet.
+Prerequisites: the vault is a GitHub repo and `gh` is authenticated with `repo` + `workflow` scope.
 
-**5a. Copy templates into the vault repo.**
+**5a. Browser automation is required — check it's on first.** Creating the spreadsheet (5b) and the GCP console setup (5d) are done by driving a browser. Before going further, confirm a browser-driving tool is actually available to you — e.g. the `claude-in-chrome` skill or a Chrome/DevTools MCP. **Do not assume or fake clicks.**
+- **Available** → proceed; you'll drive the console in 5b/5d, pausing only for the human-only clicks.
+- **Not available** → **stop and tell the user to turn on browser automation** (recommend the **Claude in Chrome** extension / a Chrome MCP). Be direct that doing the Google Cloud console steps by hand is painful and error-prone, so this skill needs browser-use enabled. Wait until it's on, then continue — don't limp through it manually.
+
+**5b. Choose the target spreadsheet — new or existing.** Ask the user:
+- **Create a new sheet** (e.g. titled `지식` / "Knowledge") — preferred for a fresh vault. Create it by driving the browser to `sheets.new` (or via a Google Drive/Sheets tool if one is available). Capture the **spreadsheet ID** from the URL (`https://docs.google.com/spreadsheets/d/<ID>/edit`).
+- **Use an existing sheet** — ask for its URL or ID. If syncing into a specific tab rather than the first one, also capture the tab `gid` (the `#gid=<N>` / `?gid=<N>` in the URL) for `WORKSHEET_GID`.
+
+Record `SPREADSHEET_ID` (and `WORKSHEET_GID` if set). The sync uses 18 columns (16 frontmatter fields + `body` + hidden `_hash`); an existing sheet's first tab will be reshaped to that header on first sync, so prefer a dedicated/empty tab.
+
+**5c. Copy templates into the vault repo.**
 - `sheets-sync/sync.py` → vault root `sync.py`
 - `sheets-sync/requirements.txt` → vault root `requirements.txt` (merge if one already exists)
 - `sheets-sync/sheets-sync.yml` → `.github/workflows/sheets-sync.yml`
 - Ensure `.gitignore` contains `*.json` (service-account keys must never be committed).
 - If the vault lives in a subfolder, set `--vault <folder>` in the workflow's run step.
 
-**5b. Create the Google Cloud service account (browser-driven).** Drive the browser, pausing for the human-only click:
+**5d. Create the Google Cloud service account.** Drive the browser through these, pausing for the human-only key download:
 1. Create a GCP project (`console.cloud.google.com/projectcreate`), then switch to it.
 2. Enable the **Google Sheets API** for the project.
-3. Create a **service account**; record its `client_email`.
-4. Create a **JSON key** — ★ **the human clicks the final "Create" / accepts the download** (it is a credential download). Save the file *outside* the repo.
+3. Create a **service account**; record its `client_email` (e.g. `name@project.iam.gserviceaccount.com`).
+4. Create a **JSON key** — ★ **the human clicks the final "Create" / accepts the download** (it is a credential download; never do it silently for them in any mode). Save the file *outside* the repo.
 
-**5c. Share the spreadsheet — ★ human only.** The user opens the target spreadsheet → **Share** → adds the service-account `client_email` as **Editor**. Modifying sharing/permissions is a human action — never do it for them. Without this the API returns 403.
+**5e. Share the spreadsheet with the service account — ★ human only.** This is a permission change, so the user must do it themselves. Guide them explicitly:
+1. Open the target spreadsheet (from 5b).
+2. Click **Share** (top-right).
+3. Paste the service-account `client_email` from 5d.
+4. Set the role to **Editor**, untick "Notify people" if shown, and **Send / Share**.
+Without this the sync fails with `403 PERMISSION_DENIED`. Confirm with the user that they've done it before continuing.
 
-**5d. Wire the repo via `gh`.**
+**5f. Wire the repo via `gh`.**
 - `gh secret set GOOGLE_SA_KEY < /path/to/key.json` (uploaded encrypted; never printed or committed).
-- `gh variable set SPREADSHEET_ID --body <spreadsheet-id>` (and `WORKSHEET_GID` if targeting a specific tab).
+- `gh variable set SPREADSHEET_ID --body <spreadsheet-id>` (and `gh variable set WORKSHEET_GID --body <gid>` if a specific tab).
 
-**5e. Initial sync + push.**
+**5g. Initial sync + push.**
 - Verify locally first: `SPREADSHEET_ID=… GOOGLE_APPLICATION_CREDENTIALS=…/key.json python sync.py --vault <vault> --dry-run`, then run without `--dry-run`.
 - Commit the templates and push → the **Sheets Sync** Action reflects only changed nodes on every subsequent push.
 
-Report what was created (project id, service-account email, secret/variable names) and remind the user the key file is a live credential to keep safe (or rotate later in GCP).
+Report what was created (project id, service-account email, spreadsheet URL, secret/variable names) and remind the user the key file is a live credential to keep safe (or rotate later in GCP).
 
 ### 6. Done
 
