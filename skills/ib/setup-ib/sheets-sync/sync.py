@@ -151,17 +151,31 @@ def get_or_create_ws(sh, title: str, cols: int):
         return sh.add_worksheet(title=title, rows=100, cols=cols)
 
 
-def read_sheet(ws, key_cols: list[int], hash_idx: int):
-    """현재 시트 → (헤더, {key: (행번호1based, 기존해시)})."""
-    values = ws.get_all_values()
-    header = values[0] if values else []
+def read_sheet(ws, key_cols, hash_idx, n_cols):
+    """변경 감지에 필요한 **키 열 + `_hash` 열만** 읽는다(body 등 본문 열은 안 읽음).
+
+    `_hash`가 이미 행 전체(본문 포함) 내용을 담고 있으므로, 변경 여부는 해시 비교로 충분.
+    덕분에 행이 많아도 읽기 페이로드가 작다(읽기는 탭당 batch_get 1회).
+    반환: (헤더, {key: (행번호1based, 기존해시)})
+    """
+    import gspread
+    col = lambda i: gspread.utils.rowcol_to_a1(1, i + 1).rstrip("1")
+    res = ws.batch_get([
+        f"{col(0)}1:{col(n_cols - 1)}1",          # 헤더 행
+        f"{col(key_cols[0])}2:{col(key_cols[-1])}",  # 키 열(들)
+        f"{col(hash_idx)}2:{col(hash_idx)}",       # 해시 열
+    ])
+    header = list(res[0][0]) if len(res) > 0 and res[0] else []
+    keyvals = res[1] if len(res) > 1 else []
+    hashvals = res[2] if len(res) > 2 else []
     index: dict[str, tuple[int, str]] = {}
-    for r, row in enumerate(values[1:], start=2):
-        if not row or not row[key_cols[0]].strip():
+    nkeys = len(key_cols)
+    for i, krow in enumerate(keyvals):
+        if not krow or not krow[0].strip():
             continue
-        key = SEP.join(row[i] if i < len(row) else "" for i in key_cols)
-        h = row[hash_idx] if len(row) > hash_idx else ""
-        index[key] = (r, h)
+        key = SEP.join((krow[j] if j < len(krow) else "") for j in range(nkeys))
+        h = hashvals[i][0] if i < len(hashvals) and hashvals[i] else ""
+        index[key] = (i + 2, h)
     return header, index
 
 
@@ -172,7 +186,7 @@ def reconcile(ws, columns, key_cols, desired, dry_run, rebuild, label):
     hash_idx = len(columns) - 1
     if rebuild and not dry_run:
         ws.clear()
-    header, sheet_idx = read_sheet(ws, key_cols, hash_idx)
+    header, sheet_idx = read_sheet(ws, key_cols, hash_idx, len(columns))
     header_ok = header == columns
 
     to_add, to_update, unchanged = [], [], 0

@@ -60,7 +60,8 @@ Two tabs, normalized for graph traversal:
 
 - **Incremental by content hash.** Each node/edge row is normalized and hashed; only rows whose hash changed are written. Adds/deletes are detected by key-set diff (node key = `id`, edge key = `source|type|target`).
 - **No cache file.** The baseline hash lives in each tab's hidden `_hash` column, not a local file. GitHub Actions runners are ephemeral, so a local cache would vanish between runs — keeping state *in the sheet* makes it correct on stateless CI and **self-healing** if someone hand-edits the sheet.
-- **Minimal API calls.** One read + one `batch_update` / `append_rows` / `deleteDimension` per tab.
+- **Small, constant API calls.** Per tab: one `batch_get` that reads **only the `id` + `_hash` columns — never `body`** (the hash already encodes the body), plus one `batch_update` / `append_rows` / `deleteDimension` for the changes. Call count doesn't grow with row count, and the read payload barely does either.
+- **Ceiling.** A spreadsheet isn't a graph DB — Google Sheets caps at 10M cells (~500K node rows). Past that, move to a real store; the markdown vault is unaffected.
 
 ### Setup (via `/setup-ib`)
 
