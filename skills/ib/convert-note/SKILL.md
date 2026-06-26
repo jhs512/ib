@@ -18,7 +18,7 @@ You are ingesting raw content from the `raw/` folder into the Infinite Brain kno
 2. Scan the target file(s) with Read. Treat source files as immutable — do not modify them.
 3. Decompose into atomic nodes — one concept per node, 50-300 words each. Never exceed 300 words: longer nodes defeat scoped retrieval.
 4. For each node:
-   - Classify with exactly one of the 16 content types: `pillar decision concept question playbook task event pattern hypothesis fact source bookmark note contact reference custom`
+   - Classify with exactly one of the 16 user-creatable content types: `pillar decision concept question playbook task event pattern hypothesis fact source bookmark note contact reference custom` (the 17th type, `log`, is written automatically by skills — never assign it here)
    - Assign a unique `id` in `type-descriptive-slug` format (kebab-case)
    - Populate all frontmatter fields from `_system/FRONTMATTER-SCHEMA.md`
    - Wire to at least one other node using the 10 edge types: `related_to depends_on derived_from contradicts supports part_of preceded_by followed_by authored_by tagged_with`

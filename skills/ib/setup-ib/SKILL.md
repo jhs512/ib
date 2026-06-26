@@ -67,7 +67,7 @@ Default: `English`. Ask the user which language node content should be written i
 
 **Section E — Google Sheets mirror (optional).**
 
-> Explainer: Optionally mirror the vault to a Google Sheet — a tabular **read view** (one row per node: the 16 frontmatter fields + `body` + a hidden `_hash`). The markdown stays the source of truth; a GitHub Action re-syncs **only changed nodes** on push (content-hash based, no cache file — the baseline hash lives in the sheet's hidden `_hash` column). Useful for filtering/aggregation/dashboards and sharing with non-technical viewers. Requires a Google Cloud service account and a target spreadsheet, and the vault being a GitHub repo.
+> Explainer: Optionally mirror the vault to a Google Sheet — a tabular **read view** normalized for graph traversal into a `_data` tab (one row per node) and an `_edges` tab (one row per relation: `source · type · target · weight · note`). The markdown stays the source of truth; a GitHub Action re-syncs **only changed nodes/edges** on push (content-hash based, no cache file — the baseline hash lives in each tab's hidden `_hash` column). Useful for filtering/aggregation/dashboards and sharing with non-technical viewers. Requires a Google Cloud service account and a target spreadsheet, and the vault being a GitHub repo.
 
 Default: **skip**. If the user opts in, carry out step 5 (Google Sheets mirror) after writing the vault context. Templates and the full rationale: [sheets-sync/](./sheets-sync/), [sheets-sync/README.md](./sheets-sync/README.md).
 

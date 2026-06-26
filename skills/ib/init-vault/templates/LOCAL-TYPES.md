@@ -1,6 +1,6 @@
 # Local Custom Types
 
-This file documents any `custom` node types created for domain-specific needs that fall outside the 16 canonical types defined in `NODE-TYPES.md`.
+This file documents any `custom` node types created for domain-specific needs that fall outside the canonical types defined in `NODE-TYPES.md`.
 
 ---
 
@@ -10,7 +10,7 @@ To add a custom type, create an entry below with:
 
 - **Type name:** lowercase, singular (e.g., `product`, `metric`)
 - **Folder:** `custom/` (all custom types go here)
-- **Rationale:** why the 16 canonical types don't fit
+- **Rationale:** why the predefined types don't fit
 - **Usage scope:** which namespace(s) use this type
 
 ---

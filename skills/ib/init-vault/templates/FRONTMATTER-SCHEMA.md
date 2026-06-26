@@ -190,7 +190,7 @@ Log body should be 30–80 words. Cover: what ran, what changed, any notable fin
 
 - [ ] `id` is unique, kebab-case, prefixed with type
 - [ ] `title` is non-empty, human-readable
-- [ ] `type` matches one of the 16 canonical types
+- [ ] `type` matches one of the 17 node types (16 user-creatable + `log`)
 - [ ] `namespace` is kebab-case
 - [ ] `visibility` is one of `public`, `namespace`, `private`, `system`
 - [ ] `summary` is 1–2 sentences, under 200 chars

@@ -16,12 +16,12 @@ This skill is a pure scaffolder: it stamps out the folder structure, `_system/` 
 ## Steps
 
 1. Determine the namespace and the document language. If they were already provided (e.g. this skill was invoked from `/setup-ib` with both decided), use them and don't re-ask. Otherwise ask: "What namespace should this vault start with? (e.g. 'personal', 'work', 'research')" and "Which language should node content be written in? (e.g. 'English', '한국어 (Korean)')". The document language sets the language of all human-readable node content (titles, summaries, bodies, edge notes); the structural vocabulary — frontmatter keys, node/edge type names, visibility values, `id` slugs, namespaces, tags, folder names — always stays in canonical English (see the Document Language section in `vault-agents-template.md`).
-2. Create the 17 root folders:
-   `pillars decisions concepts questions playbooks tasks events patterns hypotheses facts sources bookmarks notes contacts references custom raw _system _templates`
+2. Create the root folders — one per node type (17, including `logs/` for auto-written log nodes) plus `raw/`, `_system/`, `_templates/`:
+   `pillars decisions concepts questions playbooks tasks events patterns hypotheses facts sources bookmarks notes contacts references custom logs raw _system _templates`
 3. Create `.gitkeep` in each empty folder so git tracks them.
 4. Create `_system/` files. **Do not write these from memory** — copy the reference templates bundled in this skill's `templates/` folder (paths relative to this SKILL.md):
    - `INDEX.md` ← `templates/INDEX.md` — master node index, one table per type. Replace the two example rows with the actual example-node IDs from step 7 and update the *Last updated* date.
-   - `NODE-TYPES.md` ← `templates/NODE-TYPES.md` — definitions for all 16 content types
+   - `NODE-TYPES.md` ← `templates/NODE-TYPES.md` — definitions for all 17 node types (16 user-creatable + `log`)
    - `EDGE-TYPES.md` ← `templates/EDGE-TYPES.md` — definitions for all 10 edge types
    - `FRONTMATTER-SCHEMA.md` ← `templates/FRONTMATTER-SCHEMA.md` — full field reference, including the reduced 8-field log schema
    - `LOCAL-TYPES.md` ← `templates/LOCAL-TYPES.md` — placeholder for custom types

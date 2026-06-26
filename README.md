@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.2.0-brightgreen.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.3.0-brightgreen.svg" alt="Version">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a>
   <img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg" alt="Claude Code Plugin">
   <img src="https://img.shields.io/badge/Skills-6-orange.svg" alt="6 Skills">
@@ -27,12 +27,27 @@ Long, loosely-linked documents are fine for humans but broken for agents: they r
 
 | Command | What it does |
 |---|---|
-| `/setup-ib` | Wire the vault operating context into any repo/folder (run once, first) |
+| `/setup-ib` | Wire the vault operating context into any repo/folder (run once, first) — optionally sets up a Google Sheets mirror |
 | `/init-vault` | Scaffold a complete vault — 17 folders, system schema, templates, example nodes (usually invoked for you by `/setup-ib`) |
 | `/convert-note` | Decompose raw material (`raw/`) into atomic typed nodes |
 | `/query-vault` | Answer questions via graph traversal — token-cheap scoped retrieval |
 | `/organize-vault` | Interactive audit: orphans, contradictions, confidence gaps, taxonomy drift |
 | `/vault-health` | Automated maintenance: confidence decay + full audit + health report (`auto` mode for cron) |
+
+## Google Sheets mirror (optional)
+
+Mirror the vault to a Google Sheet — a live, Google-native **read view** of your graph (great for filtering/dashboards, sharing with non-technical viewers, or grounding a conversational agent). The markdown stays the source of truth; a GitHub Action re-syncs **only changed nodes** on push (content-hash based, no cache file — the baseline hash lives in a hidden column, so it's correct even on stateless CI runners).
+
+`/setup-ib` wires it end-to-end: it drives the browser to create the Google Cloud service account, sets the encrypted `GOOGLE_SA_KEY` secret + `SPREADSHEET_ID`, and installs the sync. Two human-only steps remain by design (downloading the key, sharing the sheet).
+
+The sheet is normalized for graph traversal across two tabs:
+
+| Tab | Holds |
+|---|---|
+| `_data` | one row per node (frontmatter fields + `body`); `tags` / `related` are plain comma-separated text |
+| `_edges` | normalized relations `source · type · target · weight · note` — forward (`source=X`) and backlink (`target=X`) lookups are simple filters |
+
+Run modes: incremental (default), `--dry-run` (preview), `--rebuild` (wipe + regenerate from markdown). Details: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
 
 ## Install
 

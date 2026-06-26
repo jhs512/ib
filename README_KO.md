@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.2.0-brightgreen.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.3.0-brightgreen.svg" alt="Version">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a>
   <img src="https://img.shields.io/badge/Claude_Code-Plugin-purple.svg" alt="Claude Code Plugin">
   <img src="https://img.shields.io/badge/Skills-6-orange.svg" alt="6 Skills">
@@ -27,12 +27,27 @@
 
 | 명령 | 하는 일 |
 |---|---|
-| `/setup-ib` | 임의의 repo/폴더에 볼트 운영 컨텍스트 셋업 (최초 1회) |
+| `/setup-ib` | 임의의 repo/폴더에 볼트 운영 컨텍스트 셋업 (최초 1회) — 선택적으로 Google Sheets 미러까지 |
 | `/init-vault` | 완전한 볼트 스캐폴딩 — 폴더 17개, 시스템 스키마, 템플릿, 예시 노드 (보통 `/setup-ib`가 대신 호출) |
 | `/convert-note` | `raw/`의 원자료를 원자적 타입 노드로 분해 |
 | `/query-vault` | 그래프 탐색으로 질의응답 — 토큰 절약형 범위 검색 |
 | `/organize-vault` | 대화형 감사: 고아 노드, 모순, 신뢰도 갭, 태그 난립 |
 | `/vault-health` | 자동 유지보수: 신뢰도 감쇠 + 전체 감사 + 헬스 리포트 (`auto` 모드는 크론용) |
+
+## Google Sheets 미러 (선택)
+
+볼트를 Google 시트로 미러링합니다 — 그래프의 살아있는 **읽기 뷰**(필터·대시보드, 비개발자 공유, 또는 대화형 에이전트의 그라운딩에 유용). 마크다운이 진실의 원천이고, GitHub Action이 push 때 **바뀐 노드만** 재동기화합니다(콘텐츠 해시 기반, 별도 캐시 파일 없음 — 기준 해시가 숨김 열에 있어 스테이트리스 CI에서도 정확).
+
+`/setup-ib`가 전 과정을 엮어줍니다: 브라우저로 Google Cloud 서비스 계정을 만들고, 암호화된 `GOOGLE_SA_KEY` 시크릿 + `SPREADSHEET_ID`를 설정하고, 동기화를 설치합니다. 사람이 직접 할 단계는 설계상 둘뿐(키 다운로드, 시트 공유)입니다.
+
+그래프 탐색에 맞춰 두 탭으로 정규화됩니다:
+
+| 탭 | 내용 |
+|---|---|
+| `_data` | 노드당 1행(프론트매터 필드 + `body`); `tags` / `related`는 JSON이 아닌 쉼표 구분 텍스트 |
+| `_edges` | 정규화된 관계 `source · type · target · weight · note` — 나가는(`source=X`)·들어오는(`target=X`) 탐색이 단순 필터 |
+
+실행 모드: 증분(기본), `--dry-run`(미리보기), `--rebuild`(싹 비우고 마크다운 기준 재생성). 자세히: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
 
 ## 설치
 
