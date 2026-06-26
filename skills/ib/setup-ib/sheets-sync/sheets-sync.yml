@@ -20,6 +20,10 @@ on:
         description: "계획만 출력(쓰기 없음)"
         type: boolean
         default: false
+      rebuild:
+        description: "시트를 싹 비우고 마크다운 기준으로 전체 재생성"
+        type: boolean
+        default: false
 
 concurrency:
   group: sheets-sync          # 동시 실행 직렬화(레이스 방지)
@@ -44,8 +48,7 @@ jobs:
           SPREADSHEET_ID: ${{ vars.SPREADSHEET_ID }}
           WORKSHEET_GID: ${{ vars.WORKSHEET_GID }}
         run: |
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            python sync.py --vault . --dry-run
-          else
-            python sync.py --vault .
-          fi
+          ARGS="--vault ."
+          [ "${{ github.event.inputs.rebuild }}" = "true" ] && ARGS="$ARGS --rebuild"
+          [ "${{ github.event.inputs.dry_run }}" = "true" ] && ARGS="$ARGS --dry-run"
+          python sync.py $ARGS

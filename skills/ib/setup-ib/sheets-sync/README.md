@@ -51,6 +51,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json
 export SPREADSHEET_ID=...        # 대상 시트 ID
 python sync.py --vault . --dry-run   # 계획 확인
 python sync.py --vault .             # 동기화
+python sync.py --vault . --rebuild   # 시트 싹 비우고 md 기준 전체 재생성(뭔가 어긋났을 때)
 ```
 
 > 키 JSON(`*.json`)은 절대 커밋하지 말 것 — `.gitignore` 에 추가.

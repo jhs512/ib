@@ -150,10 +150,15 @@ def read_sheet(ws):
 
 
 # ── 동기화 ────────────────────────────────────────────────────────────────
-def sync(vault: Path, dry_run: bool) -> None:
+def sync(vault: Path, dry_run: bool, rebuild: bool = False) -> None:
     import gspread
 
     ws = get_worksheet()
+    if rebuild and not dry_run:
+        print("rebuild: 대상 탭을 싹 비우고 마크다운 기준으로 전체 재생성합니다.")
+        ws.clear()
+    elif rebuild:
+        print("rebuild(dry-run): 실제로는 대상 탭을 비우고 전체 재생성합니다.")
     desired = scan_vault(vault)
     header, sheet_idx = read_sheet(ws)
 
@@ -214,11 +219,13 @@ def main() -> None:
     ap.add_argument("--vault", default=os.environ.get("VAULT_DIR", "."),
                     help="마크다운 볼트 루트 (기본: VAULT_DIR 또는 현재 폴더)")
     ap.add_argument("--dry-run", action="store_true", help="계획만 출력")
+    ap.add_argument("--rebuild", action="store_true",
+                    help="대상 탭을 싹 비우고 마크다운 기준으로 전체 재생성")
     args = ap.parse_args()
     vault = Path(args.vault)
     if not vault.is_dir():
         sys.exit(f"볼트 폴더를 찾을 수 없음: {vault}")
-    sync(vault, args.dry_run)
+    sync(vault, args.dry_run, args.rebuild)
 
 
 if __name__ == "__main__":
