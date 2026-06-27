@@ -1,75 +1,75 @@
 ---
 id: pillar-example-philosophy
-title: Decisions Should Be Deliberate and Recorded
+title: 결정은 신중하게 내리고 기록되어야 한다
 type: pillar
 namespace: default
 visibility: public
-summary: The founding principle that deliberate, recorded decisions outperform ad-hoc reactions over time, especially as organizations scale and context fragments.
+summary: 신중하게 기록된 결정이 즉흥적 반응을 시간이 지남에 따라 능가한다는 창립 원칙. 특히 조직이 확장되고 맥락이 파편화될수록 그러하다.
 auto_inject: false
 applicable_when: "Empty"
 confidence: 1.0
 verified_at: 05/11/2026
 verified_by: System Bootstrap
-staleness_signal: If the organization dissolves or this vault is archived, mark as historical
+staleness_signal: 조직이 해체되거나 이 볼트가 보관 처리되면 historical로 표시한다
 tags: ["core-philosophy", "decision-making", "institutional-memory", "knowledge-management"]
 edges: [
-  {"target": "decision-example-action", "type": "supports", "weight": 0.9, "note": "The decision exemplifies the principle of deliberate action recorded in writing"}
+  {"target": "decision-example-action", "type": "supports", "weight": 0.9, "note": "이 결정은 글로 기록된 신중한 행동의 원칙을 예시한다"}
 ]
 related: ["[[decision-example-action]]"]
 source_url: "Empty"
 ---
 
-# Decisions Should Be Deliberate and Recorded
+# 결정은 신중하게 내리고 기록되어야 한다
 
-## Why This Pillar Exists
+## 이 pillar가 존재하는 이유
 
-In fast-moving organizations, the default mode is reaction. Someone asks a question, a meeting produces an answer, and within a week nobody can remember why a particular choice was made. Context decays. New team members inherit contradictory precedents. The same debates repeat themselves endlessly.
+빠르게 움직이는 조직에서 기본 모드는 반응이다. 누군가 질문을 던지고, 회의가 답을 내놓지만, 한 주가 지나면 왜 특정 선택이 내려졌는지 아무도 기억하지 못한다. 맥락은 쇠퇴한다. 새 팀원은 서로 모순되는 선례를 물려받는다. 같은 논쟁이 끝없이 반복된다.
 
-This pillar asserts that **time spent recording the reasoning behind a decision is not overhead — it is leverage**. The marginal cost of writing a decision record is small; the cost of not having it when context is needed is large and often paid by someone else.
+이 pillar는 **결정의 근거를 기록하는 데 쓰는 시간은 부대비용이 아니라 레버리지**라고 주장한다. 결정 기록을 작성하는 한계 비용은 작지만, 맥락이 필요할 때 그 기록이 없는 비용은 크며 흔히 다른 누군가가 치른다.
 
-## What "Deliberate" Means
+## "신중함"의 의미
 
-A deliberate decision is one where the following are explicit:
+신중한 결정이란 다음이 명시된 결정이다:
 
-- **The problem being solved.** Not just the symptom or the surface request, but the underlying need.
-- **Alternatives considered.** At minimum, what else was on the table and why it was rejected.
-- **The criteria for choice.** What inputs, values, or constraints drove the selection.
-- **The expected outcome.** Not a guarantee, but the hypothesis being acted on.
-- **Conditions for reversal.** What would cause this decision to be revisited.
+- **해결하려는 문제.** 증상이나 표면적 요청이 아니라 그 밑에 깔린 필요.
+- **검토한 대안.** 최소한 무엇이 테이블에 올랐고 왜 기각되었는지.
+- **선택의 기준.** 어떤 입력·가치·제약이 선택을 이끌었는지.
+- **기대 결과.** 보장이 아니라, 실행에 옮긴 가설.
+- **번복 조건.** 무엇이 이 결정을 재검토하게 만들지.
 
-Deliberate does not mean slow. A five-minute writeup in a decision node is enough for most operational choices. The point is not formality — it is traceability.
+신중함이 느림을 뜻하지는 않는다. 대부분의 운영 선택에는 decision 노드에 적은 5분짜리 정리면 충분하다. 핵심은 형식이 아니라 추적 가능성이다.
 
-## What "Recorded" Means
+## "기록"의 의미
 
-Recording means placing the decision in the vault with a structured frontmatter and a body that explains the reasoning. It does not mean a lengthy document. The ideal decision node:
+기록한다는 것은 구조화된 프론트매터와 근거를 설명하는 본문을 갖추어 결정을 볼트에 넣는 것이다. 장문의 문서를 뜻하지 않는다. 이상적인 decision 노드는:
 
-- Can be read in under two minutes.
-- Captures enough context for someone who was not in the room.
-- Links to supporting evidence (facts, sources, hypotheses).
-- Names the decision-maker or team for accountability.
+- 2분 안에 읽을 수 있다.
+- 그 자리에 없던 사람을 위한 맥락을 충분히 담는다.
+- 뒷받침하는 근거(fact, source, hypothesis)로 연결된다.
+- 책임 소재를 위해 결정권자나 팀을 명시한다.
 
-Recording also means making the decision retrievable — stored with an appropriate `namespace`, tagged for topical access, and wired to related nodes via edges.
+기록한다는 것은 또한 결정을 검색 가능하게 만드는 것이다 — 적절한 `namespace`로 저장하고, 주제별 접근을 위해 태그를 달고, 엣지로 관련 노드에 연결한다.
 
-## Relationship to Other Nodes
+## 다른 노드와의 관계
 
-This pillar is the root of a knowledge subgraph. It is supported by:
+이 pillar는 지식 하위그래프의 뿌리다. 다음이 이를 뒷받침한다:
 
-- **Decision nodes** that embody the principle in practice.
-- **Pattern nodes** that describe recurring decision shapes.
-- **Fact nodes** that provide evidential grounding for decisions.
-- **Playbook nodes** that operationalize decision outcomes.
+- 원칙을 실천으로 구현하는 **decision 노드**.
+- 반복되는 결정 형태를 기술하는 **pattern 노드**.
+- 결정에 증거적 근거를 제공하는 **fact 노드**.
+- 결정 결과를 운영화하는 **playbook 노드**.
 
-The pillar itself does not change often. When it does, the ripple effect touches every downstream node. Treat it as load-bearing.
+pillar 자체는 자주 바뀌지 않는다. 바뀔 때는 그 파급 효과가 모든 하위 노드에 미친다. 하중을 받는 구조로 취급한다.
 
-## Implications for Vault Behavior
+## 볼트 동작에 대한 함의
 
-Every agent and human operating within this vault should:
+이 볼트에서 작동하는 모든 에이전트와 사람은:
 
-1. Default to creating a decision node before taking significant action.
-2. Fill in all required frontmatter fields — especially `staleness_signal`.
-3. Wire decisions to pillars that justify them, using the `supports` edge type.
-4. Revisit decision nodes when their staleness signal is triggered.
+1. 중요한 행동을 취하기 전에 decision 노드를 만드는 것을 기본으로 한다.
+2. 모든 필수 프론트매터 필드를 채운다 — 특히 `staleness_signal`.
+3. `supports` 엣지 타입을 사용하여 결정을 그것을 정당화하는 pillar에 연결한다.
+4. staleness signal이 트리거되면 decision 노드를 재검토한다.
 
 ---
 
-*This pillar was bootstrapped as part of the initial vault scaffolding on 05/11/2026.*
+*이 pillar는 05/11/2026 초기 볼트 스캐폴딩의 일부로 부트스트랩되었다.*

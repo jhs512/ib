@@ -1,18 +1,18 @@
-# Local Custom Types
+# 로컬 커스텀 타입
 
-This file documents any `custom` node types created for domain-specific needs that fall outside the canonical types defined in `NODE-TYPES.md`.
-
----
-
-## Registration Format
-
-To add a custom type, create an entry below with:
-
-- **Type name:** lowercase, singular (e.g., `product`, `metric`)
-- **Folder:** `custom/` (all custom types go here)
-- **Rationale:** why the predefined types don't fit
-- **Usage scope:** which namespace(s) use this type
+이 파일은 `NODE-TYPES.md`에 정의된 정규 타입 범위를 벗어나는, 도메인 특화 필요를 위해 만든 `custom` 노드 타입을 문서화한다.
 
 ---
 
-*No custom types registered yet.*
+## 등록 형식
+
+커스텀 타입을 추가하려면 아래에 다음 항목으로 구성된 항목을 만든다:
+
+- **타입 이름:** 소문자, 단수형 (예: `product`, `metric`)
+- **폴더:** `custom/` (모든 커스텀 타입은 여기에 둔다)
+- **근거:** 미리 정의된 타입이 맞지 않는 이유
+- **사용 범위:** 이 타입을 사용하는 네임스페이스
+
+---
+
+*아직 등록된 커스텀 타입이 없습니다.*

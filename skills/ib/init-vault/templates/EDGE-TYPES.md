@@ -1,102 +1,102 @@
-# Edge Types Reference
+# 엣지 타입 레퍼런스
 
-This document defines all valid edge types within the Obsidian knowledge graph vault. Edges represent directed relationships between two nodes via their `id` fields.
+이 문서는 Obsidian 지식그래프 볼트에서 유효한 모든 엣지 타입을 정의한다. 엣지는 두 노드의 `id` 필드를 통해 노드 간의 방향성 있는 관계를 나타낸다.
 
 ---
 
-## Core Relationship Edges
+## 핵심 관계 엣지
 
 ### 1. related_to
-Bidirectional or loosely associated connection. Used when two nodes share thematic overlap but lack a stronger semantic bond.
+양방향이거나 느슨하게 연관된 연결. 두 노드가 주제적으로 겹치지만 더 강한 의미적 결속이 없을 때 사용한다.
 
-**Example:** A concept "compound interest" is `related_to` a decision about reinvestment strategy.
+**예시:** "복리"라는 개념은 재투자 전략에 관한 결정과 `related_to` 관계다.
 
 ---
 
 ### 2. depends_on
-Indicates that the source node cannot proceed, be validated, or be meaningfully understood without the target node first being established or resolved.
+출발 노드가 대상 노드가 먼저 확립되거나 해결되지 않으면 진행·검증·이해될 수 없음을 나타낸다.
 
-**Example:** A hypothesis node `depends_on` a fact node that provides baseline data.
+**예시:** 가설 노드가 기준 데이터를 제공하는 fact 노드에 `depends_on` 한다.
 
 ---
 
 ### 3. derived_from
-The source node was created by analyzing, inferring, or synthesizing the target node. Common from data-to-insight flows.
+출발 노드가 대상 노드를 분석·추론·종합하여 생성되었음을 의미한다. 데이터에서 인사이트로 이어지는 흐름에서 흔하다.
 
-**Example:** A pattern node is `derived_from` three separate fact nodes.
+**예시:** 패턴 노드가 세 개의 개별 fact 노드로부터 `derived_from` 된다.
 
 ---
 
 ### 4. contradicts
-The source node stands in opposition or tension with the target node. Use for debate tracking and hypothesis conflicts.
+출발 노드가 대상 노드와 대립하거나 긴장 관계에 있음을 나타낸다. 논쟁 추적과 가설 충돌 표현에 사용한다.
 
-**Example:** Hypothesis A `contradicts` Hypothesis B in their predicted outcome.
+**예시:** 가설 A가 예측 결과에서 가설 B와 `contradicts` 한다.
 
 ---
 
 ### 5. supports
-The source node provides evidence, justification, or logical backing for the target node. Opposite direction of `contradicts`.
+출발 노드가 대상 노드에 대한 근거·정당화·논리적 뒷받침을 제공한다. `contradicts`의 반대 방향이다.
 
-**Example:** A fact node `supports` a decision node by providing data-backed rationale.
+**예시:** fact 노드가 데이터 기반 근거를 제공하여 decision 노드를 `supports` 한다.
 
 ---
 
 ### 6. part_of
-The source node is a component or sub-element of the target node. Used for hierarchical decomposition.
+출발 노드가 대상 노드의 구성 요소이거나 하위 요소임을 나타낸다. 계층적 분해에 사용한다.
 
-**Example:** A task node `part_of` a playbook node.
+**예시:** task 노드가 playbook 노드의 `part_of` 다.
 
 ---
 
-## Temporal / Sequential Edges
+## 시간 / 순서 엣지
 
 ### 7. preceded_by
-Indicates the source node occurred after the target node in time or in a logical sequence.
+출발 노드가 시간상 또는 논리적 순서상 대상 노드보다 나중에 발생했음을 나타낸다.
 
-**Example:** A decision node is `preceded_by` a discovery event.
+**예시:** decision 노드가 발견 이벤트에 의해 `preceded_by` 된다.
 
 ---
 
 ### 8. followed_by
-Indicates the source node occurred before the target node in time or in a logical sequence.
+출발 노드가 시간상 또는 논리적 순서상 대상 노드보다 먼저 발생했음을 나타낸다.
 
-**Example:** A hypothesis node is `followed_by` a validation experiment.
+**예시:** 가설 노드가 검증 실험에 의해 `followed_by` 된다.
 
 ---
 
-## Attribution / Tagging Edges
+## 귀속 / 태깅 엣지
 
 ### 9. authored_by
-Links a node to the person or organization, represented as a contact node, that created or owns it.
+노드를 그것을 생성하거나 소유한 사람 또는 조직(contact 노드로 표현)에 연결한다.
 
-**Example:** A decision node is `authored_by` contact: alice-chen.
+**예시:** decision 노드가 contact: alice-chen 에 의해 `authored_by` 된다.
 
 ---
 
 ### 10. tagged_with
-Categorical association for filtering, grouping, or taxonomy purposes. Unlike `related_to`, `tagged_with` is strictly organizational.
+필터링·그룹화·분류체계 목적의 범주적 연관. `related_to`와 달리 `tagged_with`는 엄격히 조직화 용도다.
 
-**Example:** A fact node is `tagged_with` ["data", "finance", "Q1-2026"].
+**예시:** fact 노드가 ["data", "finance", "Q1-2026"] 로 `tagged_with` 된다.
 
 ---
 
-## Edge Weight Guidelines
+## 엣지 가중치 가이드라인
 
-| Weight Range | Meaning |
+| 가중치 범위 | 의미 |
 |---|---|
-| 0.0 – 0.3 | Weak or circumstantial connection |
-| 0.4 – 0.6 | Moderate correlation or partial support |
-| 0.7 – 1.0 | Strong, well-evidenced relationship |
+| 0.0 – 0.3 | 약하거나 정황적인 연결 |
+| 0.4 – 0.6 | 중간 정도의 상관 또는 부분적 뒷받침 |
+| 0.7 – 1.0 | 강하고 충분한 근거가 있는 관계 |
 
-- Weights are set by the author at creation time and should be revisited when new evidence emerges.
-- Agents should weight edges proportionally when inferring or summarizing.
-- Edges with weight 0.0 should be treated as placeholders awaiting evidence.
+- 가중치는 작성 시점에 작성자가 설정하며, 새로운 근거가 나타나면 재검토해야 한다.
+- 에이전트는 추론하거나 요약할 때 엣지를 가중치에 비례하여 반영해야 한다.
+- 가중치가 0.0인 엣지는 근거를 기다리는 플레이스홀더로 취급한다.
 
 ---
 
-## Edge Validity Rules
+## 엣지 유효성 규칙
 
-- Every edge must specify `target` (valid node id), `type` (one of the 10 above), `weight` (0.0–1.0), and `note`.
-- Self-referencing edges (`target` equals source `id`) are invalid.
-- Duplicate edge types between the same pair of nodes should be merged or disambiguated with a note.
-- Edge type must be lowercase, and must match the canonical name above exactly.
+- 모든 엣지는 `target`(유효한 노드 id), `type`(위 10개 중 하나), `weight`(0.0–1.0), `note`를 반드시 지정해야 한다.
+- 자기 참조 엣지(`target`가 출발 노드 `id`와 동일)는 유효하지 않다.
+- 동일한 노드 쌍 사이의 중복된 엣지 타입은 병합하거나 note로 구분해야 한다.
+- 엣지 타입은 소문자여야 하며, 위의 정규 명칭과 정확히 일치해야 한다.

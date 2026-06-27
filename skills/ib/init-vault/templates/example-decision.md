@@ -1,102 +1,102 @@
 ---
 id: decision-example-action
-title: Default to Reversible Actions Over Reversible Inactions
+title: 되돌릴 수 있는 무행동보다 되돌릴 수 있는 행동을 기본으로 한다
 type: decision
 namespace: default
 visibility: public
-summary: When facing ambiguous problems with time pressure, default to reversible actions over reversible inactions to maintain momentum while preserving optionality.
+summary: 시간 압박이 있는 모호한 문제에 직면했을 때, 되돌릴 수 있는 무행동보다 되돌릴 수 있는 행동을 기본으로 삼아 선택지를 보존하면서 추진력을 유지한다.
 auto_inject: false
-applicable_when: When a team is stuck in analysis paralysis or debating a non-urgent choice
+applicable_when: 팀이 분석 마비에 빠졌거나 긴급하지 않은 선택을 두고 논쟁할 때
 confidence: 0.85
 verified_at: 05/11/2026
 verified_by: System Bootstrap
-staleness_signal: If a reversible action causes a cascade of unrecoverable side effects, reconsider the default
+staleness_signal: 되돌릴 수 있는 행동이 복구 불가능한 연쇄 부작용을 일으키면 이 기본값을 재고한다
 tags: ["operational-decision", "reversibility", "momentum", "default-behavior"]
 edges: [
-  {"target": "pillar-example-philosophy", "type": "supports", "weight": 0.9, "note": "Demonstrates deliberate action: the decision itself is recorded and reasoned, embodying the pillar"}
+  {"target": "pillar-example-philosophy", "type": "supports", "weight": 0.9, "note": "신중한 행동을 예시한다: 결정 자체가 기록되고 근거가 제시되어 pillar를 구현한다"}
 ]
 related: ["[[pillar-example-philosophy]]"]
 source_url: "Empty"
 ---
 
-# Default to Reversible Actions Over Reversible Inactions
+# 되돌릴 수 있는 무행동보다 되돌릴 수 있는 행동을 기본으로 한다
 
-## Context
+## 맥락
 
-In many operational situations, teams face ambiguous problems where the "right" path is not immediately clear. The default human behavior in the face of ambiguity is to wait — gather more data, consult more people, run another analysis. Sometimes this is correct. More often, delay itself carries a cost that outweighs the cost of making a suboptimal move and correcting course.
+많은 운영 상황에서 팀은 "올바른" 길이 즉시 분명하지 않은 모호한 문제에 직면한다. 모호함 앞에서 인간의 기본 행동은 기다리는 것이다 — 더 많은 데이터를 모으고, 더 많은 사람과 상의하고, 분석을 한 번 더 돌린다. 때로는 이것이 옳다. 하지만 더 흔하게는, 지연 자체가 차선의 수를 두고 경로를 바로잡는 비용보다 더 큰 비용을 동반한다.
 
-This decision establishes a default heuristic: **when the cost of action is lower than the cost of inaction, and the action is reversible, act**.
+이 결정은 기본 휴리스틱을 확립한다: **행동의 비용이 무행동의 비용보다 낮고 그 행동이 되돌릴 수 있다면, 행동하라**.
 
-## Scope and Boundaries
+## 범위와 경계
 
-This decision applies when:
+이 결정은 다음 경우에 적용된다:
 
-- The problem is not an emergency (no lives, legal compliance, or large financial sums at immediate risk).
-- There is meaningful ambiguity about the correct path.
-- Time pressure exists — delay has a measurable or observable cost.
-- The proposed action is at least partially reversible (can be undone, mitigated, or iterated upon).
+- 문제가 긴급 상황이 아니다(생명, 법적 준수, 큰 금액이 즉각적 위험에 처하지 않음).
+- 올바른 길에 대해 의미 있는 모호함이 존재한다.
+- 시간 압박이 존재한다 — 지연에 측정 가능하거나 관찰 가능한 비용이 있다.
+- 제안된 행동이 적어도 부분적으로 되돌릴 수 있다(취소·완화·반복 가능).
 
-This decision does **not** apply when:
+이 결정은 다음 경우에는 적용되지 **않는다**:
 
-- The action would create irreversible harm (data deletion, legal commitments, breaking a contract).
-- The stakes are high enough that reversible still means expensive to reverse.
-- The team lacks the minimum context required to evaluate even an approximate outcome.
-- The decision is covered by an existing playbook or decision node with more specific guidance.
+- 행동이 되돌릴 수 없는 해를 만든다(데이터 삭제, 법적 약속, 계약 파기).
+- 되돌릴 수 있더라도 되돌리는 데 비용이 클 만큼 이해관계가 높다.
+- 팀이 대략적인 결과조차 평가하는 데 필요한 최소한의 맥락이 없다.
+- 결정이 더 구체적인 지침을 가진 기존 playbook이나 decision 노드로 이미 다뤄진다.
 
-## Alternatives Considered
+## 검토한 대안
 
-### Alternative A: Default to inaction until certainty is achieved.
+### 대안 A: 확실성이 확보될 때까지 무행동을 기본으로 한다.
 
-**Rationale:** Waiting reduces risk and allows better information to surface.
+**근거:** 기다리면 위험이 줄고 더 나은 정보가 드러날 수 있다.
 
-**Rejection reason:** In practice, certainty is rarely achieved in time-sensitive environments. Waiting produces a different set of failures — missed market windows, demoralized teams, accumulated technical debt from workarounds. The cost of reversibility management is lower than the cost of prolonged inaction in most observed cases.
+**기각 이유:** 실제로 시간에 민감한 환경에서는 확실성이 제때 확보되는 일이 드물다. 기다림은 다른 종류의 실패를 낳는다 — 놓친 시장 기회, 사기가 꺾인 팀, 임시 우회책에서 누적되는 기술 부채. 대부분의 관찰된 사례에서 되돌릴 수 있게 관리하는 비용이 장기 무행동의 비용보다 낮다.
 
-### Alternative B: Delegate all ambiguous decisions to a single authority.
+### 대안 B: 모든 모호한 결정을 단일 권한자에게 위임한다.
 
-**Rationale:** Reduces debate and speeds resolution.
+**근거:** 논쟁을 줄이고 해결을 빠르게 한다.
 
-**Rejection reason:** Centralizing decision authority creates bottlenecks and removes context from the people closest to the problem. It also makes the system fragile — if that authority is unavailable, decisions stall entirely.
+**기각 이유:** 결정 권한을 중앙화하면 병목이 생기고 문제에 가장 가까운 사람들에게서 맥락이 사라진다. 또한 시스템을 취약하게 만든다 — 그 권한자가 부재하면 결정이 완전히 멈춘다.
 
-### Alternative C: Use a committee to deliberate and reach consensus on ambiguous choices.
+### 대안 C: 위원회가 모호한 선택을 숙의하고 합의에 도달한다.
 
-**Rationale:** Multiple perspectives improve decision quality.
+**근거:** 다양한 관점이 결정 품질을 높인다.
 
-**Rejection reason:** Committees are effective for irreversible, high-stakes decisions. For reversible operational choices, the coordination overhead exceeds the benefit. The goal here is not optimal decision quality — it is sufficient speed to maintain momentum.
+**기각 이유:** 위원회는 되돌릴 수 없는 고위험 결정에 효과적이다. 되돌릴 수 있는 운영적 선택에서는 조율 부담이 이득을 초과한다. 여기서 목표는 최적의 결정 품질이 아니라 추진력을 유지할 충분한 속도다.
 
-## Decision Rationale
+## 결정 근거
 
-The default to reversible action is preferred because:
+되돌릴 수 있는 행동을 기본으로 삼는 것이 선호되는 이유:
 
-1. **Information value increases with real-world feedback.** A decision tested in production generates better data than an analysis run in isolation. Reversible actions allow the system to learn faster.
+1. **정보의 가치는 실제 피드백과 함께 커진다.** 프로덕션에서 검증된 결정은 고립된 분석보다 더 나은 데이터를 만든다. 되돌릴 수 있는 행동은 시스템이 더 빠르게 학습하게 한다.
 
-2. **Momentum has compounding value.** Teams that move confidently, even imperfectly, build a track record of execution. Stalled teams accumulate doubt and second-guessing.
+2. **추진력은 복리적 가치를 가진다.** 불완전하더라도 자신 있게 움직이는 팀은 실행의 실적을 쌓는다. 멈춘 팀은 의심과 재고를 누적한다.
 
-3. **Reversibility is more common than teams assume.** Most operational decisions — a feature flag, a routing change, a process adjustment — can be undone with reasonable effort. The barrier is psychological, not technical.
+3. **되돌릴 수 있는 경우는 팀이 생각하는 것보다 흔하다.** 대부분의 운영 결정 — 기능 플래그, 라우팅 변경, 프로세스 조정 — 은 합리적인 노력으로 취소할 수 있다. 장벽은 심리적인 것이지 기술적인 것이 아니다.
 
-4. **The cost of wrong action is lower in expectation than commonly assumed.** When reversed quickly, a suboptimal move costs only the time to reverse. The cost of inaction accumulates continuously and is often invisible until it is too late.
+4. **잘못된 행동의 비용은 흔히 가정하는 것보다 기댓값상 낮다.** 빠르게 되돌리면 차선의 수는 되돌리는 시간만큼만 비용이 든다. 무행동의 비용은 지속적으로 누적되며 너무 늦을 때까지 흔히 보이지 않는다.
 
-## Implementation Guidance
+## 실행 지침
 
-When applying this decision:
+이 결정을 적용할 때:
 
-1. **State your action explicitly.** Write it down. Even if informal, the act of writing forces clarity about what is being decided.
+1. **행동을 명시적으로 진술하라.** 적어 두라. 비공식적이더라도 적는 행위가 무엇을 결정하는지 명확하게 만든다.
 
-2. **Define the reversal condition.** Before acting, note what would cause you to undo the decision. This creates a clear trigger for evaluation.
+2. **번복 조건을 정의하라.** 행동하기 전에 무엇이 그 결정을 취소하게 만들지 적어 둔다. 이는 평가의 명확한 트리거가 된다.
 
-3. **Set a check-in point.** After acting, schedule a time to revisit whether the reversal condition has been met or whether the action should be made permanent.
+3. **점검 시점을 설정하라.** 행동한 후, 번복 조건이 충족되었는지 또는 그 행동을 영구화할지 다시 살펴볼 시간을 잡는다.
 
-4. **Treat this as a default, not a rule.** If domain knowledge, risk profile, or explicit policy says this default does not apply, defer to that signal.
+4. **이것을 규칙이 아니라 기본값으로 취급하라.** 도메인 지식, 위험 프로파일, 명시적 정책이 이 기본값이 적용되지 않는다고 말하면 그 신호를 따른다.
 
-## Relationship to Pillar
+## pillar와의 관계
 
-This decision is directly supported by the pillar `pillar-example-philosophy`, which asserts that deliberate, recorded decisions outperform ad-hoc reactions. The deliberateness here lies in:
+이 결정은 pillar `pillar-example-philosophy`의 직접적인 뒷받침을 받는다. 그 pillar는 신중하고 기록된 결정이 즉흥적 반응을 능가한다고 주장한다. 여기서 신중함은 다음에 있다:
 
-- Recording the default heuristic so it is not ad-hoc.
-- Stating the scope boundaries so the rule is not applied blindly.
-- Defining reversal conditions so the action remains within a reasoned framework.
+- 기본 휴리스틱을 기록하여 즉흥적이지 않게 만든 점.
+- 범위 경계를 진술하여 규칙이 맹목적으로 적용되지 않게 한 점.
+- 번복 조건을 정의하여 행동이 추론된 틀 안에 머물게 한 점.
 
-This decision is itself an example of the principle it draws from.
+이 결정은 그 자체로 그것이 끌어온 원칙의 예시다.
 
 ---
 
-*This decision node was created as part of the vault scaffolding bootstrap on 05/11/2026.*
+*이 decision 노드는 05/11/2026 볼트 스캐폴딩 부트스트랩의 일부로 생성되었다.*

@@ -1,126 +1,126 @@
-# Knowledge Graph Vault — Master Index
+# 지식그래프 볼트 — 마스터 인덱스
 
-> **Entry point for AI agents.** This index lists every node in the vault, grouped by type, with summary and edge count for rapid scanning.
+> **AI 에이전트를 위한 진입점.** 이 인덱스는 볼트의 모든 노드를 타입별로 그룹화하여 요약과 엣지 개수와 함께 나열하므로 빠르게 스캔할 수 있다.
 
 ---
 
 ## pillar
 
-| ID | Summary | Edges |
+| ID | 요약 | 엣지 |
 |---|---|---|
-| `pillar-example-philosophy` | The founding principle that deliberate, recorded decisions outperform ad-hoc reactions over time. | 1 |
+| `pillar-example-philosophy` | 신중하게 기록된 결정이 시간이 지남에 따라 즉흥적 반응을 능가한다는 기초 원칙. | 1 |
 
 ---
 
 ## decision
 
-| ID | Summary | Edges |
+| ID | 요약 | 엣지 |
 |---|---|---|
-| `decision-example-action` | When facing ambiguous problems with time pressure, default to reversible actions over reversible inactions. | 1 |
+| `decision-example-action` | 시간 압박 속 모호한 문제에 직면했을 때, 되돌릴 수 있는 무행동보다 되돌릴 수 있는 행동을 기본으로 한다. | 1 |
 
 ---
 
 ## concept
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## question
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## playbook
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## task
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## event
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## pattern
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## hypothesis
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## fact
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## source
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## bookmark
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## note
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## contact
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## reference
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## custom
 
-*No nodes created yet.*
+*아직 생성된 노드가 없습니다.*
 
 ---
 
 ## log
 
-> Log nodes are not indexed here. They live in `logs/` and are self-contained. To review recent operations, scan `logs/` directly.
+> log 노드는 여기에 색인되지 않는다. `logs/`에 위치하며 자기완결적이다. 최근 작업을 검토하려면 `logs/`를 직접 스캔한다.
 
 ---
 
-## Adding New Nodes
+## 새 노드 추가하기
 
-When you create a new node:
+새 노드를 생성할 때:
 
-1. Add a frontmatter block with all required fields per `_system/FRONTMATTER-SCHEMA.md`.
-2. Assign a unique `id` in `type-slug` format.
-3. Populate `edges` with at least one relationship to another node.
-4. Update this index by inserting a row into the appropriate table.
-5. Use `related` for informal wikilinks that don't need a formal edge.
-6. `log` nodes are never added to this index — they are self-contained in `logs/`.
+1. `_system/FRONTMATTER-SCHEMA.md`에 따라 모든 필수 필드를 갖춘 프론트매터 블록을 추가한다.
+2. `type-slug` 형식으로 고유한 `id`를 지정한다.
+3. `edges`에 다른 노드와의 관계를 최소 하나 채운다.
+4. 적절한 표에 행을 삽입하여 이 인덱스를 갱신한다.
+5. 정식 엣지가 필요 없는 비공식 위키링크에는 `related`를 사용한다.
+6. `log` 노드는 이 인덱스에 절대 추가하지 않는다 — `logs/`에서 자기완결적이다.
 
 ---
 
-*Last updated: 05/15/2026*
+*마지막 갱신: 05/15/2026*

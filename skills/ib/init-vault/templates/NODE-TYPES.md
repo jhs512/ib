@@ -1,82 +1,82 @@
-# Node Types Reference
+# 노드 타입 레퍼런스
 
-This document defines all valid node types within the Obsidian knowledge graph vault.
+이 문서는 Obsidian 지식그래프 볼트에서 유효한 모든 노드 타입을 정의한다.
 
 ---
 
-## Core Entity Types
+## 핵심 엔티티 타입
 
 ### 1. pillar
-The foundational belief, value, or strategic principle that grounds all downstream decisions and actions. Pillars are rarely changed and serve as the "why" behind everything.
+모든 하위 결정과 행동의 근간이 되는 기초 신념·가치·전략 원칙. pillar는 거의 바뀌지 않으며 모든 것의 "왜"에 해당한다.
 
 ### 2. decision
-A recorded choice made (or to be made) with explicit context, alternatives considered, and outcome rationale. Decisions are time-bound and should be revisitable.
+명시적 맥락, 검토한 대안, 결과 근거와 함께 내려진(또는 내려질) 선택의 기록. decision은 시점에 묶여 있으며 다시 검토할 수 있어야 한다.
 
 ### 3. concept
-An abstract idea, mental model, or framework. Concepts anchor understanding and enable cross-domain reasoning.
+추상적 아이디어, 멘탈 모델, 프레임워크. concept는 이해의 기준점이 되며 영역 간 추론을 가능하게 한다.
 
 ### 4. question
-A known unknown being tracked. Questions preserve uncertainty, open inquiry, and may become hypotheses once testable.
+추적 중인 알려진 미지(known unknown). question은 불확실성과 열린 탐구를 보존하며, 검증 가능해지면 가설이 될 수 있다.
 
 ### 5. playbook
-A repeatable procedure or runbook for producing expected outcomes. Playbooks encode institutional knowledge and reduce decision fatigue.
+기대 결과를 만들어내기 위한 반복 가능한 절차 또는 런북. playbook은 조직 지식을 인코딩하고 결정 피로를 줄인다.
 
 ### 6. task
-An actionable item, usually synced from or mapped to a real task system.
+실행 가능한 항목으로, 보통 실제 태스크 시스템에서 동기화되거나 매핑된다.
 
 ### 7. event
-A dated event the agent should reason about temporally.
+에이전트가 시간적으로 추론해야 하는 날짜가 있는 사건.
 
 ### 8. pattern
-An observed regularity in data or behavior. Patterns provide structural guidance for new problems.
+데이터나 행동에서 관찰된 규칙성. pattern은 새로운 문제에 대한 구조적 지침을 제공한다.
 
 ---
 
-## Evidential / Informational Types
+## 증거 / 정보 타입
 
 ### 9. hypothesis
-An assumption or testable prediction with a measurable validation path.
+측정 가능한 검증 경로를 가진 가정 또는 검증 가능한 예측.
 
 ### 10. fact
-An immutable, verifiable statement backed by data or an authoritative source. Facts are ground truth within the graph.
+데이터나 권위 있는 출처로 뒷받침되는 불변의 검증 가능한 진술. fact는 그래프 내의 진실의 원천이다.
 
 ### 11. source
-A reference to an external origin — article, book, podcast, talk, paper, dataset — that informs one or more nodes in the graph.
+그래프 내 하나 이상의 노드에 정보를 제공하는 외부 출처 — 기사, 책, 팟캐스트, 강연, 논문, 데이터셋 — 에 대한 참조.
 
 ### 12. bookmark
-A saved link or pointer to a resource that has not yet been processed into a full node. Bookmarks are raw capture.
+아직 완전한 노드로 가공되지 않은, 저장된 링크 또는 리소스 포인터. bookmark는 원시 캡처다.
 
 ### 13. note
-A freeform capture — meeting notes, fleeting thoughts, scratchpad entries. Notes may later be promoted into richer nodes.
+자유 형식 캡처 — 회의록, 스쳐가는 생각, 스크래치패드 항목. note는 나중에 더 풍부한 노드로 승격될 수 있다.
 
 ---
 
-## Relational / Structural Types
+## 관계 / 구조 타입
 
 ### 14. contact
-A named person with associated metadata (team, expertise, availability). Contacts are referenced by edge connections.
+연관 메타데이터(팀, 전문성, 가용성)를 가진 특정 인물. contact는 엣지 연결로 참조된다.
 
 ### 15. reference
-A generic cross-link or glossary entry used to standardize terminology and reduce duplication across nodes.
+용어를 표준화하고 노드 간 중복을 줄이기 위해 사용하는 범용 상호 링크 또는 용어집 항목.
 
 ### 16. custom
-An ad-hoc node type for domain-specific entities that do not fit the above taxonomy. Custom types should be documented locally in `_system/LOCAL-TYPES.md` with rationale.
+위 분류체계에 맞지 않는 도메인 특화 엔티티를 위한 임시 노드 타입. custom 타입은 `_system/LOCAL-TYPES.md`에 근거와 함께 로컬로 문서화해야 한다.
 
 ---
 
-## Operational Types
+## 운영 타입
 
 ### 17. log
-A lightweight, immutable record of a single skill execution. Logs are written automatically by skills (`/convert-note`, `/query-vault`, `/organize-vault`) at the end of each operation. They use a reduced frontmatter schema (8 fields, no edges, no confidence decay) and live in `logs/`. See `_system/FRONTMATTER-SCHEMA.md` for the log-specific schema.
+단일 스킬 실행에 대한 경량의 불변 기록. log는 각 작업 종료 시 스킬(`/convert-note`, `/query-vault`, `/organize-vault`)에 의해 자동으로 작성된다. 축약된 프론트매터 스키마(8개 필드, 엣지 없음, 신뢰도 감쇠 없음)를 사용하며 `logs/`에 위치한다. log 전용 스키마는 `_system/FRONTMATTER-SCHEMA.md`를 참고한다.
 
-Logs are never edited after creation. They are the operational audit trail of the vault.
+log는 생성 후 절대 편집하지 않는다. 볼트의 운영 감사 추적이다.
 
 ---
 
-## Type Assignment Guidelines
+## 타입 지정 가이드라인
 
-- Every node **must** have exactly one `type` in its frontmatter.
-- Type must be lowercase, singular, and match the canonical name above exactly.
-- Do not create new types without updating `NODE-TYPES.md` and `FRONTMATTER-SCHEMA.md` first.
-- Types are used by agents to determine interaction patterns, rendering, and edge validity.
-- `log` nodes use a reduced schema — do not apply the full frontmatter checklist to them.
+- 모든 노드는 프론트매터에 정확히 하나의 `type`을 가져야 한다.
+- type은 소문자, 단수형이어야 하며 위의 정규 명칭과 정확히 일치해야 한다.
+- `NODE-TYPES.md`와 `FRONTMATTER-SCHEMA.md`를 먼저 갱신하지 않고 새 타입을 만들지 않는다.
+- type은 에이전트가 상호작용 패턴, 렌더링, 엣지 유효성을 판단하는 데 사용된다.
+- `log` 노드는 축약된 스키마를 사용한다 — 전체 프론트매터 체크리스트를 적용하지 않는다.
