@@ -70,10 +70,15 @@ python sync.py --vault . --rebuild             # api 방식에서 두 탭 비우
 
 ## 테스트
 
-순수 로직(파싱·해시·CSV·diff)은 네트워크/Google API 없이 검증된다:
+네트워크/Google API 없이 전부 검증된다(38 케이스):
+
+- `test_sync.py` — 순수 로직: 파싱·`content_hash`·`node_row`/`edge_rows`·`scan_vault`·CSV 라운드트립·`plan_changes`.
+- `test_sync_io.py` — I/O 경로: gspread 워크시트/스프레드시트를 충실히 흉내내는 페이크(`fakes.py`)로
+  `read_sheet`·`reconcile_api`·`reconcile_overwrite`·`push_meta`·`get_or_create_ws`·삭제 순서·숨김 열·
+  그리고 `open_spreadsheet`를 모킹한 **`sync()` 엔드투엔드 라운드트립**(2차 실행 no-op)까지.
 
 ```bash
-pip install pytest
+pip install pytest pyyaml
 pytest skills/ib/setup-ib/sheets-sync/tests/ -q
 ```
 
