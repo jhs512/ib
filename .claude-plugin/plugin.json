@@ -1,6 +1,6 @@
 {
   "name": "infinite-brain",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Infinite Brain (ib) — Claude Code용 AI-우선 Obsidian 지식그래프 볼트 스킬. 선택적 Google Sheets 미러 포함. (한국어 전용)",
   "author": {
     "name": "jhs512"

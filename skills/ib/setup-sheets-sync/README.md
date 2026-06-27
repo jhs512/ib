@@ -54,7 +54,7 @@ git에 커밋해 두면 시트 상태가 버전관리·diff·머지 가능. `she
 1. **GCP 프로젝트(기본 `infinite-brain`) + Google Sheets/Drive API** — 브라우저 콘솔(필수), gcloud 있으면 가속.
    이미 있으면 새로 만들지 않고 재사용(중복 프로젝트 생성 방지).
 2. **서비스 계정 생성** → **JSON 키** … ★ **다운로드는 사람이 클릭**(자격증명).
-   `~/.config/ib/sheets-sync-sa.json` 에 저장하고 이후 재사용. 결과를 `~/.config/ib/sheets-sync.env` 에 영속화.
+   `~/.config/ib/sa-key.json` 에 저장하고 이후 재사용. 결과를 `~/.config/ib/sheets-sync.env` 에 영속화.
 
 **B. `/setup-sheets-sync` — 볼트마다:**
 3. **대상 스프레드시트** — 기본은 새 `지식` 시트 생성(Google Drive MCP), 기존 시트 재사용/다른 이름도 가능.
@@ -69,7 +69,7 @@ git에 커밋해 두면 시트 상태가 버전관리·diff·머지 가능. `she
 
 ```bash
 pip install -r requirements.txt
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json
+export GOOGLE_APPLICATION_CREDENTIALS=~/.config/ib/sa-key.json
 export SPREADSHEET_ID=...        # 대상 시트 ID
 python sync.py --vault . --dry-run            # 계획만(쓰기 없음)
 python sync.py --vault .                       # api 증분(기본) + CSV 빌드

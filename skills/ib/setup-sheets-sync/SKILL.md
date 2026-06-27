@@ -63,7 +63,7 @@ disable-model-invocation: true
 - [`tests/`](./tests/) → `tests/`(선택 — 네트워크 없는 단위 테스트)
 
 그런 다음:
-- `.gitignore` 에 `*.json` 이 포함되도록 한다(서비스 계정 키는 절대 커밋 금지).
+- `.gitignore` 에 `*.json` 이 포함되도록 재확인한다(`/setup-ib`가 기준선으로 이미 넣지만, 없으면 추가 — 서비스 계정 키는 절대 커밋 금지).
 - 볼트가 하위 폴더에 있으면 워크플로의 실행 스텝에 `--vault <folder>` 를 설정한다.
 
 각 동기화는 `sheet/_data.csv` + `sheet/_edges.csv`(시트의 git 추적 스냅샷)를 빌드한다. 이들은 커밋된다.

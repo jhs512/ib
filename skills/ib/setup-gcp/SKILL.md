@@ -67,12 +67,12 @@ disable-model-invocation: true
      ```
    이메일을 `SA_EMAIL` 로 기록한다.
 
-4. **JSON 키 — 디스크에 있으면 재사용, 없을 때만 생성.** 정규 위치는 `~/.config/ib/sheets-sync-sa.json`.
+4. **JSON 키 — 디스크에 있으면 재사용, 없을 때만 생성.** 정규 위치는 `~/.config/ib/sa-key.json`.
    - 해당 파일이 이미 있으면 **재사용**한다 — 또 다른 키를 생성하지 말 것(새 키마다 관리해야 할 라이브 자격증명이 하나 더 늘어난다). `SA_KEY_PATH` 를 기록한다.
    - 없으면(또는 사용자가 명시적으로 회전을 원하면) 생성한다:
      ```bash
      mkdir -p ~/.config/ib
-     gcloud iam service-accounts keys create ~/.config/ib/sheets-sync-sa.json --iam-account="$SA_EMAIL"
+     gcloud iam service-accounts keys create ~/.config/ib/sa-key.json --iam-account="$SA_EMAIL"
      ```
    브라우저 경로와 달리 gcloud `keys create` 는 파일을 직접 써도 된다(사용자가 이 스킬을 호출하고 이 경로를 선택했으므로). 라이브 자격증명이 어디에 기록됐는지 사용자에게 알린다.
 
@@ -83,7 +83,7 @@ disable-model-invocation: true
 1. **프로젝트 — 재사용 또는 생성.** 프로젝트 선택기(`console.cloud.google.com` → 프로젝트 드롭다운) 또는 `console.cloud.google.com/cloud-resource-manager` 를 연다. **먼저 목록에서 슬러그를 검색한다.** `infinite-brain` 이름의 프로젝트가 있으면 선택한다 — `projectcreate` 를 열지 **말 것**. 없을 때만 `console.cloud.google.com/projectcreate` 로 가서 생성한다. 프로젝트 id를 확보한다.
 2. **API 활성화.** 활성 프로젝트에서 **Google Sheets API** 와 **Google Drive API** 를 활성화한다(`console.cloud.google.com/apis/library`). 라이브러리에 이미 "API Enabled" 가 보이면 건너뛴다.
 3. **서비스 계정 — 재사용 또는 생성.** `console.cloud.google.com/iam-admin/serviceaccounts` 를 연다. `ib-sheets-sync@…` 가 목록에 있으면 재사용하고, 없으면 생성한다. `client_email` 을 기록한다.
-4. **JSON 키 — ★ 사람이 다운로드.** 서비스 계정 → Keys → Add key → Create new key → JSON. **사람이 최종 "Create"/다운로드 수락을 클릭한다** — 자격증명 다운로드를 조용히 대신 수행하지 말 것. 파일을 `~/.config/ib/sheets-sync-sa.json` 로 옮기/저장하게 한다(필요하면 폴더 생성). 경로를 사용자와 확인한다.
+4. **JSON 키 생성 — ★ 사람이 "만들기" 클릭.** 서비스 계정 → Keys → Add key → Create new key → **JSON(권장)을 선택한 채 "만들기"/Create 클릭**. 키 유형 다이얼로그(JSON / P12)가 뜨면 머뭇거리지 말고 **JSON으로 그대로 진행하라고 사용자에게 분명히 안내한다** — P12는 불필요. (자격증명 다운로드 클릭 자체는 사람이; 조용히 대신 수락하지 말 것.) 다운로드된 파일을 `~/.config/ib/sa-key.json` 로 저장한다(레포 밖, 필요하면 폴더 생성). **왜 안전한지 사용자에게 안내**: 이 키는 `.gitignore` 의 `*.json` 으로 **절대 커밋되지 않고**, GitHub Action용으로는 `gh secret set GOOGLE_SA_KEY` 로 **암호화 시크릿**으로만 들어간다(코드·로그 노출 없음). 콘솔 상단의 `iam.serviceAccountKeyExposureResponse` 배너는 키가 **공개 노출될 때**만 자동 비활성화하는 보호 장치라, 커밋하지 않는 한 무관함도 덧붙인다. 경로를 사용자와 확인한다.
 
 ## 4. 재사용을 위해 영속화
 
@@ -92,7 +92,7 @@ disable-model-invocation: true
 ```sh
 GCP_PROJECT_ID=<project id>
 SA_EMAIL=<service-account email>
-SA_KEY_PATH=<JSON 키의 절대 경로, 예: ~/.config/ib/sheets-sync-sa.json>
+SA_KEY_PATH=<JSON 키의 절대 경로, 예: ~/.config/ib/sa-key.json>
 ```
 
 파일이 이미 있으면 키를 중복으로 추가하지 말고 값을 제자리에서 갱신한다.

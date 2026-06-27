@@ -90,7 +90,29 @@ disable-model-invocation: true
 - **GitHub remote 없음** → 지금 만들지 묻는다(기본 **yes** — Sheets 미러가 필요로 하고 미리 해두면 싸다). yes이고 `gh`가 인증돼 있으면 `gh repo create <name> --private --source=. --remote=origin`(이름과 private/public을 사용자와 확인). **`gh`가 설치돼 있지 않으면 먼저 설치를 안내한다** — <https://cli.github.com/>(Windows: `winget install GitHub.cli`, macOS: `brew install gh`), 그다음 `gh auth login`(세션에서 바로 보려면 `! gh auth login`). 사용자가 설치를 원치 않으면 나중에 remote 추가하는 법을 알려준다.
 - **이미 remote 있는 git repo** → 할 일 없음. 기록하고 넘어간다.
 
-repo가 git 기반인지, GitHub remote가 있는지 기록한다 — step 6이 Sheets 미러 전에 무엇이 필요한지 사용자에게 알릴 때 쓴다.
+**`.gitignore` 전략 (git을 쓰면 항상 보장).** git repo를 만들거나 이미 있을 때, 볼트 루트에 `.gitignore`가 다음 기준선을 포함하도록 **생성하거나 병합**한다(이미 있는 항목은 중복 추가 금지, 사용자의 기존 규칙은 보존). 가장 중요한 건 **자격증명이 절대 커밋되지 않게** 하는 것 — 서비스 계정 키는 `~/.config/ib/sa-key.json`(레포 밖)에 두지만, 누가 실수로 레포에 키를 떨궈도 막히도록 `*.json`을 넣는다(심층 방어):
+
+```gitignore
+# Infinite Brain vault
+# 자격증명 — 서비스 계정 키/시크릿은 절대 커밋 금지
+*.json
+.env
+*.key
+*.pem
+
+# OS / 에디터 부산물
+.DS_Store
+Thumbs.db
+
+# Python (선택: Google Sheets 미러 sync.py)
+__pycache__/
+*.pyc
+.pytest_cache/
+```
+
+`*.json`이 추적하고 싶은 특정 json까지 무시하면 `!경로/파일.json`으로 예외를 둔다. 시트 미러가 만드는 `sheet/*.csv`는 csv라 영향 없음(추적 유지).
+
+repo가 git 기반인지, GitHub remote가 있는지, `.gitignore`가 기준선을 갖췄는지 기록한다 — step 6이 Sheets 미러 전에 무엇이 필요한지 사용자에게 알릴 때 쓴다.
 
 ### 3. 확인 후 편집
 
@@ -119,7 +141,7 @@ repo가 git 기반인지, GitHub remote가 있는지 기록한다 — step 6이 
 - 사용자가 `/init-vault`를 선택했으면, 선택한 위치에서 호출하고 Section B의 namespace를 넘겨(문서 언어는 한국어 고정) 재질문하지 않게 하며, 그 스킬의 운영-블록 단계는 건너뛴다 — CLAUDE.md/AGENTS.md 블록은 이 스킬의 일이고 위에서 막 썼다.
 - 아니면 다른 ib 스킬이 읽을 최소를 시드: `_system/AGENTS.md`와 `_system/INDEX.md`(타입별 빈 표). `AGENTS.md`는 이 스킬 폴더의 시드 — [vault-agents-template.md](./vault-agents-template.md) — 를 복사하고 Section B의 `<namespace>`를 치환한다(문서 언어 한국어). 이 시드는 전체 운영 규칙(taxonomy, 가시성 모델, frontmatter 스키마, 문서 언어 규칙, 로그 작성 규칙, 금지 행동, 첫 세션 프로토콜)을 담는다. 기존 `_system/` 파일은 건드리지 말 것.
 
-그다음 **Section D**의 버전 관리 결정을 수행한다: 사용자가 동의했고 아직 repo가 아니면 `git init`; 선택했으면 `gh`로 GitHub repo 생성. 방금 repo를 초기화했다면 스캐폴드된 볼트를 첫 커밋한다(이후로 step 0의 리셋이 복구 가능하도록).
+그다음 **Section D**의 버전 관리 결정을 수행한다: 사용자가 동의했고 아직 repo가 아니면 `git init`; 선택했으면 `gh`로 GitHub repo 생성. **그리고 Section D의 `.gitignore` 기준선을 루트에 생성/병합한다**(자격증명 커밋 방지 — git을 쓰면 항상). 방금 repo를 초기화했다면 `.gitignore`까지 포함해 스캐폴드된 볼트를 첫 커밋한다(이후로 step 0의 리셋이 복구 가능하도록).
 
 ### 5. 완료 (코어 셋업)
 
