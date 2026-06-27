@@ -23,7 +23,7 @@ disable-model-invocation: true
 
 - **ib 컨텍스트 존재** — 이 디렉터리에 있어야 한다(없으면 먼저 `/setup-ib` 실행).
 - **GCP 자격증명 존재.** `~/.config/ib/sheets-sync.env` 를 읽는다. 없거나 불완전하면(`GCP_PROJECT_ID`, `SA_EMAIL`, `SA_KEY_PATH`), 중단하고 사용자에게 먼저 **`/setup-gcp`** 를 실행하라고 알린다(호출 제안 가능). 거기서 `SA_EMAIL` 과 `SA_KEY_PATH` 를 로드한다.
-- **GitHub 레포 + `gh`.** 볼트가 GitHub 레포이고 `gh` 가 `repo` + `workflow` 스코프로 인증돼 있어야 한다(`gh auth status`). `/setup-ib` 가 기본으로 이를 설정한다. 볼트가 어쩌다 git 레포가 아니거나 아직 GitHub 리모트가 없으면, 중단하지 말고 지금 생성을 제안한다(`git init` / `gh repo create <name> --private --source=. --remote=origin`) — 미러의 GitHub Action에 필요하다.
+- **GitHub 레포 + `gh`.** 볼트가 GitHub 레포이고 `gh` 가 `repo` + `workflow` 스코프로 인증돼 있어야 한다(`gh auth status`). `/setup-ib` 가 기본으로 이를 설정한다. **`gh` 가 설치돼 있지 않으면 먼저 설치를 안내한다** — <https://cli.github.com/>(Windows: `winget install GitHub.cli`, macOS: `brew install gh`), 그다음 `gh auth login`(세션에서 바로 보려면 `! gh auth login`). 볼트가 어쩌다 git 레포가 아니거나 아직 GitHub 리모트가 없으면, 중단하지 말고 지금 생성을 제안한다(`git init` / `gh repo create <name> --private --source=. --remote=origin`) — 미러의 GitHub Action에 필요하다.
 
 볼트가 더 큰 레포의 하위 폴더에 있으면 볼트 폴더를 기록한다 — 워크플로와 로컬 실행에서 `--vault <folder>` 가 된다.
 

@@ -81,6 +81,8 @@ Obsidian과 별개로, 볼트를 **Google 시트**로 미러링할 수 있습니
 
 > 브라우저 자동화(예: Claude in Chrome)는 **필수**입니다 — `/setup-gcp`·`/setup-sheets-sync` 가 **맨 처음** 켜져 있는지 확인하고, 꺼져 있으면 중간까지 진행하지 않고 즉시 멈춥니다. `gcloud` 가 설치돼 있으면 결정적(멱등) 단계만 빠르게 처리하는 보조 역할입니다.
 
+> 레포 연동(시크릿·변수 설정)에는 **GitHub CLI(`gh`)** 가 필요합니다 — 없으면 스킬이 설치를 안내합니다: <https://cli.github.com/>(Windows: `winget install GitHub.cli`, macOS: `brew install gh`) → `gh auth login`(`repo` + `workflow` 스코프).
+
 ### git에 보관하는 CSV 스냅샷
 
 매 실행 시 `sheet/_data.csv` · `sheet/_edges.csv` 도 빌드합니다 — 시트 내용을 순수 텍스트로

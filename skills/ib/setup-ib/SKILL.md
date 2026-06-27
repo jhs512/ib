@@ -87,7 +87,7 @@ disable-model-invocation: true
 이건 기본 단계이지 부가가 아니다 — **조용히 건너뛰지 말 것.** `git rev-parse --is-inside-work-tree`와 `git remote -v`를 확인한다:
 
 - **git repo 아님** → 초기화할지 묻는다(기본 **yes**). 동의하면 repo 루트에서 `git init`. 명시적 거절 없이는 "버전 관리 없는" 볼트로 진행하지 말 것.
-- **GitHub remote 없음** → 지금 만들지 묻는다(기본 **yes** — Sheets 미러가 필요로 하고 미리 해두면 싸다). yes이고 `gh`가 인증돼 있으면 `gh repo create <name> --private --source=. --remote=origin`(이름과 private/public을 사용자와 확인). `gh`가 없으면 나중에 remote 추가하는 법을 알려준다.
+- **GitHub remote 없음** → 지금 만들지 묻는다(기본 **yes** — Sheets 미러가 필요로 하고 미리 해두면 싸다). yes이고 `gh`가 인증돼 있으면 `gh repo create <name> --private --source=. --remote=origin`(이름과 private/public을 사용자와 확인). **`gh`가 설치돼 있지 않으면 먼저 설치를 안내한다** — <https://cli.github.com/>(Windows: `winget install GitHub.cli`, macOS: `brew install gh`), 그다음 `gh auth login`(세션에서 바로 보려면 `! gh auth login`). 사용자가 설치를 원치 않으면 나중에 remote 추가하는 법을 알려준다.
 - **이미 remote 있는 git repo** → 할 일 없음. 기록하고 넘어간다.
 
 repo가 git 기반인지, GitHub remote가 있는지 기록한다 — step 6이 Sheets 미러 전에 무엇이 필요한지 사용자에게 알릴 때 쓴다.
