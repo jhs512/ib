@@ -1,6 +1,6 @@
 {
   "name": "infinite-brain",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Infinite Brain (ib) — AI-first Obsidian knowledge-graph vault skills for Claude Code, with an optional Google Sheets mirror.",
   "author": {
     "name": "jhs512"
@@ -12,6 +12,8 @@
     "./skills/ib/init-vault",
     "./skills/ib/organize-vault",
     "./skills/ib/query-vault",
-    "./skills/ib/vault-health"
+    "./skills/ib/vault-health",
+    "./skills/ib/setup-gcp",
+    "./skills/ib/setup-sheets-sync"
   ]
 }

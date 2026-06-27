@@ -1,8 +1,9 @@
 # Google Sheets 미러 (sheets-sync)
 
 Infinite Brain 볼트(마크다운 = 진실의 원천)를 Google 스프레드시트(읽기 뷰)로
-**push 시 변경분만** 동기화하는 템플릿. `setup-ib` 스킬이 이 폴더의 파일을
-볼트 레포로 복사하고 GCP/Actions 설정을 안내한다.
+**push 시 변경분만** 동기화하는 템플릿. `setup-sheets-sync` 스킬이 이 폴더의 파일을
+볼트 레포로 복사하고 Actions 설정을 안내한다. GCP 자격증명(프로젝트·서비스계정·키)은
+`setup-gcp` 스킬이 1회 프로비저닝해 `~/.config/ib/sheets-sync.env` 에 저장하고 재사용한다.
 
 ## 동기화 전략 (왜 캐시 파일이 없나)
 
@@ -44,15 +45,21 @@ git에 커밋해 두면 시트 상태가 버전관리·diff·머지 가능. `she
 - `api`(기본): 탭별 해시 비교로 **바뀐 행만** 기록(읽기는 `id`+`_hash` 열만).
 - `overwrite`: 탭을 `clear` 후 **전체 일괄 쓰기**(단순·확실). 쓴 행에 `_hash`가 포함돼 이후 `api` 실행도 일관.
 
-## 1회 설정 (대부분 setup-ib가 자동, ★ 2개만 사람이 클릭)
+## 1회 설정 (자격증명은 setup-gcp가 1회·재사용, 연동은 setup-sheets-sync가 볼트별, ★ 2개만 사람이 클릭)
 
-1. **GCP 프로젝트 + Google Sheets API 사용 설정** (setup-ib가 브라우저로 진행)
-2. **서비스 계정 생성** → **JSON 키 생성** … ★ **다운로드 버튼은 사람이 클릭**(자격증명)
-3. **대상 스프레드시트를 서비스 계정 이메일과 공유(편집자)** … ★ **사람이 권한 부여**
-4. 레포 설정 (setup-ib가 `gh` 로 진행):
+**A. `/setup-gcp` — 계정당 1회, 멱등(있으면 재사용):**
+1. **GCP 프로젝트(기본 `infinite-brain`) + Google Sheets/Drive API** — gcloud 우선, 없으면 브라우저.
+   이미 있으면 새로 만들지 않고 재사용(중복 프로젝트 생성 방지).
+2. **서비스 계정 생성** → **JSON 키** … gcloud면 자동 생성, 브라우저면 ★ **다운로드는 사람이 클릭**(자격증명).
+   `~/.config/ib/sheets-sync-sa.json` 에 저장하고 이후 재사용. 결과를 `~/.config/ib/sheets-sync.env` 에 영속화.
+
+**B. `/setup-sheets-sync` — 볼트마다:**
+3. **대상 스프레드시트** — 기본은 새 `지식` 시트 생성(Google Drive MCP), 기존 시트 재사용/다른 이름도 가능.
+4. **대상 스프레드시트를 서비스 계정 이메일과 공유(편집자)** … ★ **사람이 권한 부여**.
+5. 레포 설정 (`gh` 로 진행):
    - Secret `GOOGLE_SA_KEY` = JSON 키 내용
    - Variable `SPREADSHEET_ID` = 대상 시트 ID  (탭 이름은 `NODE_TAB`/`EDGE_TAB`로 변경 가능)
-5. 볼트 레포로 `sync.py`·`requirements.txt`·`.github/workflows/sheets-sync.yml` 복사 후
+6. 볼트 레포로 `sync.py`·`requirements.txt`·`.github/workflows/sheets-sync.yml` 복사 후
    초기 동기화 → push.
 
 ## 로컬 실행
@@ -79,7 +86,7 @@ python sync.py --vault . --rebuild             # api 방식에서 두 탭 비우
 
 ```bash
 pip install pytest pyyaml
-pytest skills/ib/setup-ib/sheets-sync/tests/ -q
+pytest skills/ib/setup-sheets-sync/tests/ -q
 ```
 
 > 키 JSON(`*.json`)은 절대 커밋하지 말 것 — `.gitignore` 에 추가.

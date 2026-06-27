@@ -27,12 +27,14 @@ Long, loosely-linked documents are fine for humans but broken for agents: they r
 
 | Command | What it does |
 |---|---|
-| `/setup-ib` | Wire the vault operating context into any repo/folder (run once, first) — optionally sets up a Google Sheets mirror |
+| `/setup-ib` | Wire the vault operating context into any repo/folder (run once, first). Re-running offers a clean "reset and re-setup" (local-only) |
 | `/init-vault` | Scaffold a complete vault — 17 folders, system schema, templates, example nodes (usually invoked for you by `/setup-ib`) |
 | `/convert-note` | Decompose raw material (`raw/`) into atomic typed nodes |
 | `/query-vault` | Answer questions via graph traversal — token-cheap scoped retrieval |
 | `/organize-vault` | Interactive audit: orphans, contradictions, confidence gaps, taxonomy drift |
 | `/vault-health` | Automated maintenance: confidence decay + full audit + health report (`auto` mode for cron) |
+| `/setup-gcp` | *(optional, for the Sheets mirror)* Provision reusable Google Cloud credentials once — project (default `infinite-brain`), service account, JSON key; idempotent (reuses what exists) |
+| `/setup-sheets-sync` | *(optional, for the Sheets mirror)* Connect the current vault to a Google Sheet (default `지식`) — create/share the sheet, copy templates, wire `gh`, initial sync |
 
 ## Google Sheets mirror (optional)
 
@@ -63,17 +65,23 @@ Two tabs, normalized for graph traversal:
 - **Small, constant API calls.** Per tab: one `batch_get` that reads **only the `id` + `_hash` columns — never `body`** (the hash already encodes the body), plus one `batch_update` / `append_rows` / `deleteDimension` for the changes. Call count doesn't grow with row count, and the read payload barely does either.
 - **Ceiling.** A spreadsheet isn't a graph DB — Google Sheets caps at 10M cells (~500K node rows). Past that, move to a real store; the markdown vault is unaffected.
 
-### Setup (via `/setup-ib`)
+### Setup (two skills: `/setup-gcp` once, then `/setup-sheets-sync` per vault)
 
-`/setup-ib` wires the whole thing end-to-end:
+The mirror is set up in two steps so the heavy Google Cloud work happens **once** and is reused across every vault:
 
-1. Create a new spreadsheet (or point at an existing one).
-2. Drive the browser to create a Google Cloud project, enable the Sheets API, and a service account. **★ you click the JSON-key download** (it's a credential).
-3. **★ you share the spreadsheet** with the service-account email as **Editor** (a permission change only you can make; without it the API returns 403).
-4. It sets the encrypted `GOOGLE_SA_KEY` secret + `SPREADSHEET_ID` variable and copies `sync.py` + the workflow into the repo.
-5. Push → the **Sheets Sync** Action reflects changed nodes/edges automatically.
+**`/setup-gcp` — once per Google account (idempotent).**
 
-> Browser automation (e.g. Claude in Chrome) is required for the console steps — `/setup-ib` will tell you to enable it if it's missing, rather than walking you through the console by hand.
+1. Create or **reuse** a Google Cloud project (default `infinite-brain`) and enable the Sheets + Drive APIs. Prefers the `gcloud` CLI; falls back to driving the browser. It checks for an existing project/service account/key and reuses them — it will **not** create duplicate projects.
+2. Create (or reuse) a service account and its JSON key. With `gcloud` the key is written for you; via the browser **★ you click the JSON-key download** (it's a credential). The result is saved to `~/.config/ib/sheets-sync.env` for reuse.
+
+**`/setup-sheets-sync` — per vault.**
+
+3. Create a new spreadsheet (default name `지식`, via the Google Drive tools) or point at an existing one.
+4. **★ you share the spreadsheet** with the service-account email as **Editor** (a permission change only you can make; without it the API returns 403).
+5. It sets the encrypted `GOOGLE_SA_KEY` secret + `SPREADSHEET_ID` variable and copies `sync.py` + the workflow into the repo.
+6. Push → the **Sheets Sync** Action reflects changed nodes/edges automatically.
+
+> If `gcloud` isn't installed, `/setup-gcp` falls back to browser automation (e.g. Claude in Chrome) for the console steps and will tell you to enable it if it's missing, rather than walking you through the console by hand.
 
 ### Git-tracked CSV snapshot
 
@@ -88,7 +96,7 @@ python sync.py --vault . --method overwrite  # clear each tab and rewrite in ful
 python sync.py --vault . --rebuild           # api mode: wipe the tabs and regenerate
 ```
 
-Templates, tests, and full rationale: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
+Templates, tests, and full rationale: [`skills/ib/setup-sheets-sync/`](skills/ib/setup-sheets-sync/).
 
 ### Troubleshooting
 
@@ -188,12 +196,14 @@ top 5 things I should re-confirm or delete.
 ```
 skills/
 └── ib/                  # Infinite Brain skill group
-    ├── setup-ib/        #   onboarding + agent-rules seed
-    ├── init-vault/      #   scaffolder + vendored system templates
-    ├── convert-note/    #   raw → atomic nodes
-    ├── query-vault/     #   scoped graph retrieval
-    ├── organize-vault/  #   interactive audit
-    └── vault-health/    #   decay + audit + report (cron-ready)
+    ├── setup-ib/            #   onboarding + agent-rules seed
+    ├── init-vault/          #   scaffolder + vendored system templates
+    ├── setup-gcp/           #   (optional) reusable Google Cloud credentials for the Sheets mirror
+    ├── setup-sheets-sync/   #   (optional) per-vault Sheets mirror wiring + sync templates/tests
+    ├── convert-note/        #   raw → atomic nodes
+    ├── query-vault/         #   scoped graph retrieval
+    ├── organize-vault/      #   interactive audit
+    └── vault-health/        #   decay + audit + report (cron-ready)
 .claude-plugin/
     ├── plugin.json      # Claude Code plugin manifest
     └── marketplace.json # marketplace listing

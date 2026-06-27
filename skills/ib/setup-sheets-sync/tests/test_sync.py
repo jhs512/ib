@@ -1,6 +1,6 @@
 """sync.py 순수 로직 테스트 (네트워크/Google API 불필요).
 
-실행: pytest skills/ib/setup-ib/sheets-sync/tests/ -q
+실행: pytest skills/ib/setup-sheets-sync/tests/ -q
 필요: PyYAML (sync가 사용). gspread는 I/O 함수에서만 import 되므로 불필요.
 """
 import sys

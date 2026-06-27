@@ -1,5 +1,5 @@
 # Infinite Brain 볼트 → Google Sheet 동기화 (push 시 변경분만 반영).
-# setup-ib 스킬이 이 파일을 볼트 레포의 .github/workflows/sheets-sync.yml 로 복사한다.
+# setup-sheets-sync 스킬이 이 파일을 볼트 레포의 .github/workflows/sheets-sync.yml 로 복사한다.
 #
 # 필요 설정(레포 Settings에서):
 #   - Secret  GOOGLE_SA_KEY   : 서비스 계정 JSON 내용 전체

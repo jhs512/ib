@@ -9,8 +9,8 @@
     {
       "name": "infinite-brain",
       "source": "./",
-      "description": "Infinite Brain (ib) — give your AI agent permanent, typed memory. Six skills that turn any folder into an Obsidian-compatible knowledge graph: typed nodes, typed edges, confidence decay, scoped retrieval. Optional one-way Google Sheets mirror.",
-      "version": "0.3.0"
+      "description": "Infinite Brain (ib) — give your AI agent permanent, typed memory. Skills that turn any folder into an Obsidian-compatible knowledge graph: typed nodes, typed edges, confidence decay, scoped retrieval. Optional one-way Google Sheets mirror (idempotent GCP setup + per-vault sync).",
+      "version": "0.4.0"
     }
   ]
 }
