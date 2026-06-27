@@ -10,7 +10,7 @@
       "name": "infinite-brain",
       "source": "./",
       "description": "Infinite Brain (ib) — AI 에이전트에게 영속적인 타입 메모리를 준다. 임의의 폴더를 Obsidian 호환 지식그래프로 바꾸는 스킬: 타입 있는 노드, 타입 있는 엣지, 신뢰도 감쇠, 범위 한정 검색. 선택적 단방향 Google Sheets 미러(멱등 GCP 셋업 + 볼트별 동기화). 한국어 전용.",
-      "version": "0.5.0"
+      "version": "0.5.1"
     }
   ]
 }
