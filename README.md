@@ -75,15 +75,20 @@ Two tabs, normalized for graph traversal:
 
 > Browser automation (e.g. Claude in Chrome) is required for the console steps — `/setup-ib` will tell you to enable it if it's missing, rather than walking you through the console by hand.
 
+### Git-tracked CSV snapshot
+
+Every run also builds `sheet/_data.csv` + `sheet/_edges.csv` — a plain-text, diffable snapshot of the sheet committed to the repo (`sheet/_meta.csv` is the hand-maintained schema doc). So the spreadsheet's content is versioned in git too, and the Action commits the refreshed snapshot back.
+
 ### Run modes
 
 ```bash
-python sync.py --vault .            # incremental (default) — only changed rows
-python sync.py --vault . --dry-run  # preview the plan, write nothing
-python sync.py --vault . --rebuild  # wipe the tabs and regenerate from markdown
+python sync.py --vault .                     # api incremental (default) — only changed rows
+python sync.py --vault . --dry-run           # preview the plan, write nothing
+python sync.py --vault . --method overwrite  # clear each tab and rewrite in full
+python sync.py --vault . --rebuild           # api mode: wipe the tabs and regenerate
 ```
 
-Templates and full rationale: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
+Templates, tests, and full rationale: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
 
 ### Troubleshooting
 

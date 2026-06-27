@@ -117,8 +117,10 @@ Record `SPREADSHEET_ID`. The sync manages two tabs **by name** — `_data` (node
 - `sheets-sync/sync.py` → vault root `sync.py`
 - `sheets-sync/requirements.txt` → vault root `requirements.txt` (merge if one already exists)
 - `sheets-sync/sheets-sync.yml` → `.github/workflows/sheets-sync.yml`
+- `sheets-sync/_meta.csv` → `sheet/_meta.csv` (the schema doc that fills the `_meta` tab; edit later if desired)
+- `sheets-sync/tests/` → `tests/` (optional — the network-free unit tests)
 - Ensure `.gitignore` contains `*.json` (service-account keys must never be committed).
-- If the vault lives in a subfolder, set `--vault <folder>` in the workflow's run step.
+- Each sync builds `sheet/_data.csv` + `sheet/_edges.csv` (a git-tracked snapshot of the sheet); these get committed. If the vault lives in a subfolder, set `--vault <folder>` in the workflow's run step.
 
 **5d. Create the Google Cloud service account.** Drive the browser through these, pausing for the human-only key download:
 1. Create a GCP project (`console.cloud.google.com/projectcreate`), then switch to it.
@@ -138,8 +140,8 @@ Without this the sync fails with `403 PERMISSION_DENIED`. Confirm with the user 
 - `gh variable set SPREADSHEET_ID --body <spreadsheet-id>` (tab names default to `_data`/`_edges`; set `NODE_TAB`/`EDGE_TAB` variables only to override).
 
 **5g. Initial sync + push.**
-- Verify locally first: `SPREADSHEET_ID=… GOOGLE_APPLICATION_CREDENTIALS=…/key.json python sync.py --vault <vault> --dry-run`, then run without `--dry-run`.
-- Commit the templates and push → the **Sheets Sync** Action reflects only changed nodes on every subsequent push.
+- Verify locally first: `SPREADSHEET_ID=… GOOGLE_APPLICATION_CREDENTIALS=…/key.json python sync.py --vault <vault> --dry-run`, then run without `--dry-run` (default `--method api`; `--method overwrite` clears+rewrites each tab).
+- Commit the templates **and the generated `sheet/*.csv` snapshot**, then push → the **Sheets Sync** Action reflects only changed nodes/edges on every subsequent push (and commits the refreshed CSV snapshot back).
 
 Report what was created (project id, service-account email, spreadsheet URL, secret/variable names) and remind the user the key file is a live credential to keep safe (or rotate later in GCP).
 

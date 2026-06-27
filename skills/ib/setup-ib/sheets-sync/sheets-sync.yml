@@ -4,7 +4,10 @@
 # 필요 설정(레포 Settings에서):
 #   - Secret  GOOGLE_SA_KEY   : 서비스 계정 JSON 내용 전체
 #   - Variable SPREADSHEET_ID  : 대상 스프레드시트 ID
-#   탭 이름은 기본 _data(노드)/_edges(관계). 바꾸려면 NODE_TAB/EDGE_TAB 변수 추가.
+#   탭 이름은 기본 _data(노드)/_edges(관계)/_meta. 바꾸려면 NODE_TAB/EDGE_TAB/META_TAB 변수.
+#
+# sync는 sheet/_data.csv·_edges.csv 를 빌드하므로, 변경되면 git에 다시 커밋해 둔다
+# (시트 스냅샷을 레포에 보관). csv만 바뀐 커밋은 paths 필터상 재실행되지 않는다.
 name: Sheets Sync
 
 on:
@@ -16,18 +19,26 @@ on:
       - "requirements.txt"
   workflow_dispatch:
     inputs:
+      method:
+        description: "api(증분) 또는 overwrite(전체 덮어쓰기)"
+        type: choice
+        default: api
+        options: [api, overwrite]
       dry_run:
         description: "계획만 출력(쓰기 없음)"
         type: boolean
         default: false
       rebuild:
-        description: "시트를 싹 비우고 마크다운 기준으로 전체 재생성"
+        description: "api 방식에서 두 탭 비우고 전체 재생성"
         type: boolean
         default: false
 
 concurrency:
   group: sheets-sync          # 동시 실행 직렬화(레이스 방지)
   cancel-in-progress: false
+
+permissions:
+  contents: write             # 빌드된 CSV 스냅샷을 커밋백하기 위함
 
 jobs:
   sync:
@@ -48,6 +59,16 @@ jobs:
           SPREADSHEET_ID: ${{ vars.SPREADSHEET_ID }}
         run: |
           ARGS="--vault ."
+          [ "${{ github.event.inputs.method }}" = "overwrite" ] && ARGS="$ARGS --method overwrite"
           [ "${{ github.event.inputs.rebuild }}" = "true" ] && ARGS="$ARGS --rebuild"
           [ "${{ github.event.inputs.dry_run }}" = "true" ] && ARGS="$ARGS --dry-run"
           python sync.py $ARGS
+
+      - name: Commit CSV snapshot if changed
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sheet/_data.csv sheet/_edges.csv 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore(sheet): update CSV snapshot [skip ci]"
+          git push || true

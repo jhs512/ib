@@ -31,7 +31,18 @@ Infinite Brain 볼트(마크다운 = 진실의 원천)를 Google 스프레드시
   `tags`·`related` 는 **쉼표 구분 텍스트**(JSON 아님). 관계는 여기 없고 `_edges`에 있다.
 - **`_edges`** (관계, 평면) — `source | type | target | weight | note | _hash`.
   노드 frontmatter의 `edges` 를 sync가 펼쳐 자동 생성. 양방향 필터로 탐색.
-- **`_meta`** (스키마 문서) — sync 대상 아님.
+- **`_meta`** (스키마 문서) — `sheet/_meta.csv`(레포에 보관하는 고정 문서)로 통째 갱신.
+
+### git에 보관하는 CSV 스냅샷 (3개)
+
+매 실행 시 볼트에서 **`sheet/_data.csv` · `sheet/_edges.csv`** 를 빌드한다(`_hash` 제외, 순수 텍스트).
+git에 커밋해 두면 시트 상태가 버전관리·diff·머지 가능. `sheet/_meta.csv` 는 손으로 관리하는
+스키마 문서(시드 제공). CI 워크플로는 변경된 CSV를 자동으로 커밋백한다.
+
+### 동기화 방식 (`--method`)
+
+- `api`(기본): 탭별 해시 비교로 **바뀐 행만** 기록(읽기는 `id`+`_hash` 열만).
+- `overwrite`: 탭을 `clear` 후 **전체 일괄 쓰기**(단순·확실). 쓴 행에 `_hash`가 포함돼 이후 `api` 실행도 일관.
 
 ## 1회 설정 (대부분 setup-ib가 자동, ★ 2개만 사람이 클릭)
 
@@ -50,9 +61,20 @@ Infinite Brain 볼트(마크다운 = 진실의 원천)를 Google 스프레드시
 pip install -r requirements.txt
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json
 export SPREADSHEET_ID=...        # 대상 시트 ID
-python sync.py --vault . --dry-run   # 계획 확인
-python sync.py --vault .             # 동기화
-python sync.py --vault . --rebuild   # 시트 싹 비우고 md 기준 전체 재생성(뭔가 어긋났을 때)
+python sync.py --vault . --dry-run            # 계획만(쓰기 없음)
+python sync.py --vault .                       # api 증분(기본) + CSV 빌드
+python sync.py --vault . --method overwrite    # 탭 clear 후 전체 쓰기
+python sync.py --vault . --rebuild             # api 방식에서 두 탭 비우고 재생성
+# CSV 출력 폴더 변경: --csv-dir <경로>  (기본 <vault>/sheet)
+```
+
+## 테스트
+
+순수 로직(파싱·해시·CSV·diff)은 네트워크/Google API 없이 검증된다:
+
+```bash
+pip install pytest
+pytest skills/ib/setup-ib/sheets-sync/tests/ -q
 ```
 
 > 키 JSON(`*.json`)은 절대 커밋하지 말 것 — `.gitignore` 에 추가.

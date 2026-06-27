@@ -1,0 +1,64 @@
+섹션,키,값,설명
+개요,제목,Infinite Brain 지식 그래프 (Google Sheets 미러),
+개요,설명,AI-first 지식 그래프를 그래프 탐색에 맞게 정규화한 시트. 노드(_data)와 관계(_edges)를 분리.,
+개요,원본,https://github.com/JotaSXBR/obsidian-infinite-brain,
+개요,스키마,노드 15필드+body / 17 node types / 10 edge types,
+개요,갱신일,2026-06-26,
+탭 구성,_data,노드,"id별 1행, 스캔용 (tags·related는 쉼표 구분)"
+탭 구성,_edges,관계,"source/type/target/weight/note 평면. 나가는=source 필터, 들어오는=target 필터"
+탭 구성,_meta,스키마 문서,이 탭
+_data 필드,id,string·필수,"타입-슬러그 kebab-case, 고유 (예: hyp-creators-will-pay-29mo)"
+_data 필드,title,string·필수,사람이 읽는 제목 5~80자
+_data 필드,type,string·필수,"노드 타입 (아래), 정확히 1개"
+_data 필드,namespace,string·필수,프로젝트/팀/도메인 kebab-case
+_data 필드,visibility,string·필수,"공개 범위 (아래), 기본 namespace"
+_data 필드,summary,string·필수,"AI 스캔용 1~2문장, 200자 미만"
+_data 필드,auto_inject,boolean·필수,자동 주입 여부 (TRUE/FALSE)
+_data 필드,applicable_when,string·선택,"관련해지는 트리거 조건, 없으면 Empty"
+_data 필드,confidence,float·필수,0.0~1.0 신뢰도
+_data 필드,verified_at,date·선택,"마지막 검증일 MM/DD/YYYY, 미검증 시 Empty"
+_data 필드,verified_by,string·선택,"마지막 검증자, 미검증 시 Empty"
+_data 필드,staleness_signal,string·필수,낡았음을 알리는 관찰가능 조건문
+_data 필드,tags,쉼표구분·필수,"kebab-case 태그 2~8개 (쉼표 구분, JSON 아님)"
+_data 필드,related,쉼표구분·선택,"비공식 교차참조 ([[Title]] 또는 id, 쉼표 구분)"
+_data 필드,source_url,string·선택,"출처 URL, 없으면 Empty"
+_data 필드,body,text,원자적 지식 본문 50~300단어
+_edges 컬럼,source,node id,관계의 출발 노드 id
+_edges 컬럼,type,edge type,엣지 타입 (아래)
+_edges 컬럼,target,node id,관계의 도착 노드 id
+_edges 컬럼,weight,0.0~1.0,관계 강도
+_edges 컬럼,note,string,관계 설명
+노드 타입,pillar,근본 신념/가치/전략 원칙,
+노드 타입,decision,맥락·대안·근거를 기록한 의사결정,
+노드 타입,concept,추상 아이디어/멘탈모델/프레임워크,
+노드 타입,question,추적 중인 알려진 미지,
+노드 타입,playbook,반복 가능한 절차/런북,
+노드 타입,task,실행 항목,
+노드 타입,event,시간적으로 추론할 날짜 이벤트,
+노드 타입,pattern,관찰된 규칙성,
+노드 타입,hypothesis,검증 경로를 가진 가설,
+노드 타입,fact,검증가능 불변 사실(그라운드 트루스),
+노드 타입,source,외부 출처(글/책/논문 등),
+노드 타입,bookmark,처리 전 저장 링크,
+노드 타입,note,자유 형식 캡처,
+노드 타입,contact,사람(팀/전문성),
+노드 타입,reference,용어집/교차링크,
+노드 타입,custom,도메인 특화(LOCAL-TYPES.md),
+노드 타입,log,스킬 실행 기록(축소 스키마),
+엣지 타입,related_to,느슨한 연관,
+엣지 타입,depends_on,대상이 먼저 성립해야 함,
+엣지 타입,derived_from,대상을 분석·합성해 생성,
+엣지 타입,contradicts,대립/긴장,
+엣지 타입,supports,근거/정당성 제공,
+엣지 타입,part_of,구성요소(계층),
+엣지 타입,preceded_by,대상 이후 발생,
+엣지 타입,followed_by,대상 이전 발생,
+엣지 타입,authored_by,작성자(contact)에 연결,
+엣지 타입,tagged_with,분류/그룹핑,
+가시성,public,폭넓게 재사용,
+가시성,namespace,해당 네임스페이스 내(기본),
+가시성,private,민감/개인,
+가시성,system,에이전트 운영 규칙,
+엣지 가중치,0.0–0.3,약함/정황적,
+엣지 가중치,0.4–0.6,중간,
+엣지 가중치,0.7–1.0,강함/입증됨,

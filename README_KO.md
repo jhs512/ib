@@ -75,15 +75,22 @@ Obsidian과 별개로, 볼트를 **Google 시트**로 미러링할 수 있습니
 
 > 콘솔 단계엔 브라우저 자동화(예: Claude in Chrome)가 필요합니다 — 없으면 `/setup-ib`가 수작업으로 끌고 가지 않고 "켜라"고 안내합니다.
 
+### git에 보관하는 CSV 스냅샷
+
+매 실행 시 `sheet/_data.csv` · `sheet/_edges.csv` 도 빌드합니다 — 시트 내용을 순수 텍스트로
+diff·버전관리할 수 있는 스냅샷을 레포에 커밋(`sheet/_meta.csv` 는 손으로 관리하는 스키마 문서).
+Action이 갱신된 스냅샷을 자동 커밋백합니다.
+
 ### 실행 모드
 
 ```bash
-python sync.py --vault .            # 증분(기본) — 바뀐 행만
-python sync.py --vault . --dry-run  # 계획만 미리보기, 쓰기 없음
-python sync.py --vault . --rebuild  # 탭을 싹 비우고 마크다운 기준 재생성
+python sync.py --vault .                     # api 증분(기본) — 바뀐 행만
+python sync.py --vault . --dry-run           # 계획만 미리보기, 쓰기 없음
+python sync.py --vault . --method overwrite  # 각 탭 clear 후 전체 다시 쓰기
+python sync.py --vault . --rebuild           # api 방식: 탭 비우고 재생성
 ```
 
-템플릿·전체 근거: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
+템플릿·테스트·전체 근거: [`skills/ib/setup-ib/sheets-sync/`](skills/ib/setup-ib/sheets-sync/).
 
 ### 트러블슈팅
 
