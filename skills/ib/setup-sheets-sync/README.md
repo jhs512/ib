@@ -47,10 +47,13 @@ git에 커밋해 두면 시트 상태가 버전관리·diff·머지 가능. `she
 
 ## 1회 설정 (자격증명은 setup-gcp가 1회·재사용, 연동은 setup-sheets-sync가 볼트별, ★ 2개만 사람이 클릭)
 
+> 브라우저 자동화(예: Claude in Chrome)는 **필수 전제**다. 두 스킬 모두 맨 처음에 켜져 있는지 확인하고,
+> 꺼져 있으면 중간까지 진행하지 않고 즉시 멈춘다. `gcloud` 가 있으면 멱등 단계만 빠르게 처리하는 보조 역할.
+
 **A. `/setup-gcp` — 계정당 1회, 멱등(있으면 재사용):**
-1. **GCP 프로젝트(기본 `infinite-brain`) + Google Sheets/Drive API** — gcloud 우선, 없으면 브라우저.
+1. **GCP 프로젝트(기본 `infinite-brain`) + Google Sheets/Drive API** — 브라우저 콘솔(필수), gcloud 있으면 가속.
    이미 있으면 새로 만들지 않고 재사용(중복 프로젝트 생성 방지).
-2. **서비스 계정 생성** → **JSON 키** … gcloud면 자동 생성, 브라우저면 ★ **다운로드는 사람이 클릭**(자격증명).
+2. **서비스 계정 생성** → **JSON 키** … ★ **다운로드는 사람이 클릭**(자격증명).
    `~/.config/ib/sheets-sync-sa.json` 에 저장하고 이후 재사용. 결과를 `~/.config/ib/sheets-sync.env` 에 영속화.
 
 **B. `/setup-sheets-sync` — 볼트마다:**

@@ -1,6 +1,6 @@
 ---
 name: setup-gcp
-description: Provisions the reusable Google Cloud credentials the Infinite Brain Google Sheets mirror needs — a GCP project (default `infinite-brain`), the Sheets + Drive APIs enabled, a service account, and a downloaded JSON key — and saves them to `~/.config/ib/sheets-sync.env` for reuse across every vault. Idempotent by design: it checks for an existing project / service account / key and REUSES them instead of creating duplicates (this skill exists because the old setup created a second GCP project on every run). Run this once per Google account; afterwards `setup-sheets-sync` reuses the saved credentials. Prefers the `gcloud` CLI for deterministic idempotency and falls back to driving the browser if `gcloud` isn't installed.
+description: Provisions the reusable Google Cloud credentials the Infinite Brain Google Sheets mirror needs — a GCP project (default `infinite-brain`), the Sheets + Drive APIs enabled, a service account, and a downloaded JSON key — and saves them to `~/.config/ib/sheets-sync.env` for reuse across every vault. Idempotent by design: it checks for an existing project / service account / key and REUSES them instead of creating duplicates (this skill exists because the old setup created a second GCP project on every run). Run this once per Google account; afterwards `setup-sheets-sync` reuses the saved credentials. Browser automation (e.g. Claude in Chrome) is a hard prerequisite — the skill checks it is enabled up front and STOPS if not, rather than provisioning halfway; the `gcloud` CLI, if installed, is only an optional accelerator for the deterministic steps.
 disable-model-invocation: true
 ---
 
@@ -21,22 +21,24 @@ Each resource below is **check-then-create**. If it already exists, reuse it. Th
 
 ## 0. Short-circuit if already provisioned
 
-Read `~/.config/ib/sheets-sync.env` if it exists. If it already defines `GCP_PROJECT_ID`, `SA_EMAIL`, and a `SA_KEY_PATH` that points to a real file, the account is already set up — report the existing values and stop, unless the user explicitly wants to re-provision or rotate the key. There is nothing per-vault here; this skill never needs to run twice for the same account.
+Read `~/.config/ib/sheets-sync.env` if it exists. If it already defines `GCP_PROJECT_ID`, `SA_EMAIL`, and a `SA_KEY_PATH` that points to a real file, the account is already set up — report the existing values and stop, unless the user explicitly wants to re-provision or rotate the key. There is nothing per-vault here; this skill never needs to run twice for the same account. (This is the one path that needs no browser — everything below does.)
 
-## 1. Pick the path: gcloud (preferred) or browser
+## 1. Browser automation must be ON — check this FIRST (hard gate)
 
-Check whether `gcloud` is installed and authenticated (`gcloud --version`, `gcloud auth list`).
+This skill assumes browser use. **Before provisioning anything**, confirm a browser-driving tool is actually available and enabled — the `claude-in-chrome` skill or a Chrome/DevTools MCP. **Do not assume or fake clicks.**
 
-- **Installed & authed** → use the gcloud path (§2). It makes existence checks deterministic — the cleanest way to stay idempotent.
-- **Not installed** → offer the user a choice:
-  - **Install gcloud** (recommended) — point them at <https://cloud.google.com/sdk/docs/install>, then `gcloud auth login`. Resume at §2. (Suggest they run the login via `! gcloud auth login` so its output lands in this session.)
-  - **Browser fallback** — drive the Cloud Console by hand (§3). Confirm a browser-driving tool is actually available first (the `claude-in-chrome` skill or a Chrome/DevTools MCP). If none is available, stop and ask the user to enable one — doing the console steps blind is error-prone.
+- **Enabled** → continue.
+- **Not enabled** → **STOP immediately.** Do not create a project, service account, or key. Tell the user to turn on browser automation (recommend the **Claude in Chrome** extension / a Chrome MCP) and re-run this skill. Be direct that the GCP console work — and especially the human-only key download — needs browser-use; don't limp through it manually or half-provision and then fail.
 
-Ask the user for the project slug; default `infinite-brain`. Ask for the service-account name; default `ib-sheets-sync`.
+This gate is deliberately first so the run can't get halfway (the failure mode that previously left duplicate/half-created projects behind).
 
-## 2. gcloud path (idempotent)
+Then ask the user for the project slug (default `infinite-brain`) and the service-account name (default `ib-sheets-sync`).
 
-Let `SLUG` be the chosen project slug (default `infinite-brain`) and `SA` the service-account name (default `ib-sheets-sync`).
+**Optional accelerator — `gcloud`.** If `gcloud` is installed and authenticated (`gcloud --version`, `gcloud auth list`), you *may* use it for the deterministic create/check steps in §2 — it makes the idempotency checks exact. It does not replace the browser gate: the JSON-key handling and any console confirmation still go through the browser. If `gcloud` isn't installed, do everything via the browser console (§3); you can optionally point the user at <https://cloud.google.com/sdk/docs/install> if they'd rather install it.
+
+## 2. gcloud accelerator path (optional, idempotent)
+
+Use this only if `gcloud` is available (per §1). Let `SLUG` be the chosen project slug (default `infinite-brain`) and `SA` the service-account name (default `ib-sheets-sync`).
 
 1. **Project — reuse or create.**
    ```bash
@@ -74,9 +76,9 @@ Let `SLUG` be the chosen project slug (default `infinite-brain`) and `SA` the se
      ```
    Unlike the browser path, the gcloud `keys create` is allowed to write the file directly (the user invoked this skill and chose this path). Tell the user a live credential was written and where.
 
-## 3. Browser fallback (idempotent by inspection)
+## 3. Browser console path (primary, idempotent by inspection)
 
-Drive the Cloud Console, but **check before every create**:
+The default path (browser-use is required either way). Drive the Cloud Console, but **check before every create**:
 
 1. **Project — reuse or create.** Open the project picker (`console.cloud.google.com` → project dropdown) or `console.cloud.google.com/cloud-resource-manager`. **Search the list for the slug first.** If a project named `infinite-brain` exists, select it — do **not** open `projectcreate`. Only if it's absent, go to `console.cloud.google.com/projectcreate` and create it. Capture the project id.
 2. **Enable APIs.** For the active project, enable **Google Sheets API** and **Google Drive API** (`console.cloud.google.com/apis/library`). If the library already shows "API Enabled", skip.

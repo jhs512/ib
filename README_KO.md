@@ -71,8 +71,8 @@ Obsidian과 별개로, 볼트를 **Google 시트**로 미러링할 수 있습니
 
 **`/setup-gcp` — 계정당 1회 (멱등):**
 
-1. Google Cloud 프로젝트(기본 `infinite-brain`) 생성 **또는 재사용** + Sheets·Drive API 사용 설정. `gcloud` 우선, 없으면 브라우저. 기존 프로젝트/서비스계정/키가 있으면 재사용하며 **중복 프로젝트를 만들지 않습니다**.
-2. 서비스 계정·JSON 키 생성(또는 재사용). `gcloud`면 키를 자동 생성, 브라우저면 **★ JSON 키 다운로드는 사람이 클릭**(자격증명). 결과는 `~/.config/ib/sheets-sync.env` 에 저장해 재사용.
+1. Google Cloud 프로젝트(기본 `infinite-brain`) 생성 **또는 재사용** + Sheets·Drive API 사용 설정. 기존 프로젝트/서비스계정/키가 있으면 재사용하며 **중복 프로젝트를 만들지 않습니다**.
+2. 서비스 계정·JSON 키 생성(또는 재사용). **★ JSON 키 다운로드는 사람이 클릭**(자격증명). 결과는 `~/.config/ib/sheets-sync.env` 에 저장해 재사용.
 
 **`/setup-sheets-sync` — 볼트마다:**
 
@@ -81,7 +81,7 @@ Obsidian과 별개로, 볼트를 **Google 시트**로 미러링할 수 있습니
 5. 암호화된 `GOOGLE_SA_KEY` 시크릿 + `SPREADSHEET_ID` 변수 설정, `sync.py`·워크플로를 레포에 복사.
 6. push → **Sheets Sync** 액션이 변경된 노드/엣지를 자동 반영.
 
-> `gcloud` 가 없으면 `/setup-gcp` 가 콘솔 단계에서 브라우저 자동화(예: Claude in Chrome)로 폴백하며, 꺼져 있으면 수작업으로 끌고 가지 않고 "켜라"고 안내합니다.
+> 브라우저 자동화(예: Claude in Chrome)는 **필수**입니다 — `/setup-gcp`·`/setup-sheets-sync` 가 **맨 처음** 켜져 있는지 확인하고, 꺼져 있으면 중간까지 진행하지 않고 즉시 멈춥니다. `gcloud` 가 설치돼 있으면 결정적(멱등) 단계만 빠르게 처리하는 보조 역할입니다.
 
 ### git에 보관하는 CSV 스냅샷
 

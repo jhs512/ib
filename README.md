@@ -71,8 +71,8 @@ The mirror is set up in two steps so the heavy Google Cloud work happens **once*
 
 **`/setup-gcp` — once per Google account (idempotent).**
 
-1. Create or **reuse** a Google Cloud project (default `infinite-brain`) and enable the Sheets + Drive APIs. Prefers the `gcloud` CLI; falls back to driving the browser. It checks for an existing project/service account/key and reuses them — it will **not** create duplicate projects.
-2. Create (or reuse) a service account and its JSON key. With `gcloud` the key is written for you; via the browser **★ you click the JSON-key download** (it's a credential). The result is saved to `~/.config/ib/sheets-sync.env` for reuse.
+1. Create or **reuse** a Google Cloud project (default `infinite-brain`) and enable the Sheets + Drive APIs. It checks for an existing project/service account/key and reuses them — it will **not** create duplicate projects.
+2. Create (or reuse) a service account and its JSON key, then **★ you click the JSON-key download** (it's a credential). The result is saved to `~/.config/ib/sheets-sync.env` for reuse.
 
 **`/setup-sheets-sync` — per vault.**
 
@@ -81,7 +81,7 @@ The mirror is set up in two steps so the heavy Google Cloud work happens **once*
 5. It sets the encrypted `GOOGLE_SA_KEY` secret + `SPREADSHEET_ID` variable and copies `sync.py` + the workflow into the repo.
 6. Push → the **Sheets Sync** Action reflects changed nodes/edges automatically.
 
-> If `gcloud` isn't installed, `/setup-gcp` falls back to browser automation (e.g. Claude in Chrome) for the console steps and will tell you to enable it if it's missing, rather than walking you through the console by hand.
+> Browser automation (e.g. Claude in Chrome) is **required** — `/setup-gcp` and `/setup-sheets-sync` check it is enabled as their first step and stop if it isn't, rather than provisioning halfway. The `gcloud` CLI, if installed, only speeds up the deterministic project/service-account steps.
 
 ### Git-tracked CSV snapshot
 
